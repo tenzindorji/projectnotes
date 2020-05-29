@@ -1,0 +1,72 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 'This template is for launching signle instance with security group in default VPC for training purpose'
+Parameters:
+  KeyName:
+    Description: SSH key pair should exist or generated before launching ec2 instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Used existing KeyName
+  InstanceType:
+    Description: For training purpose, we will use t2.small
+    Type: String
+    Default: t2.small
+    ConstraintDescription: Must be valid EC2 instance type
+  SSHLocation:
+    Description: The IP address range that can be used to SSH to the EC2 instances
+    Type: String
+    MinLength: '9'
+    MaxLength: '18'
+    Default: 0.0.0.0/0
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType:
+        Ref: InstanceType
+      #SecurityGroupIds: #use this if the security group is already created
+      #  - sg-beaa58ed
+      SecurityGroup:
+        Ref: InstanceSecurityGroup
+      KeyName:
+        Ref: KeyName
+      ImageId: ami-01e24be29428c15b2
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp:
+          Ref: SSHLocation
+      - IpProtocol: tcp
+        FromPort: '80 '
+        ToPort: '80'
+        CidrIp:
+          Ref: SSHLocation
+Outputs:
+  InstanceId:
+    Description: Instance ID
+    Value:
+      Ref: EC2Instance
+  AZ:
+    Description: AZ
+    Value:
+      Fn::GetAtt:
+        - InstanceId
+        - AvailabilityZone
+  PublicDNS:
+    Description: Public DNS
+    Value:
+      Fn::GetAtt:
+        - InstanceId
+        - PublicDNSName
+  PublicIp:
+    Description: Public IP
+    Value:
+      Fn::GetAtt:
+        - InstanceId
+        - PublicIp
