@@ -1,0 +1,19 @@
+sers:
+  test:
+    dn: dc=test
+    cn: test
+    objectClass:
+      - inetOrgPerson
+      - person
+      - ldapPublicKey
+      - posixAccount
+     employeeType: inactive
+  test2:
+    dn: dc=test
+    cn: test2
+    objectClass:
+      - inetOrgPerson
+      - person
+      - ldapPublicKey
+      - posixAccount
+    employeeType: inactive

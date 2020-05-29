@@ -1,0 +1,36 @@
+#Filename: SampleCase.yml
+#%YAML 1.1
+VesselTypes:
+  - Name: Escort Tug
+    Length: 32
+    Breadth: 12.8
+    Depth: 9
+    Draughts:
+    - Name: Draught1
+      Mass: 500
+      CentreOfGravity: [16.497, 0, 4.32]
+    TowingStaples:
+    - Name: Staple1
+      Position: [0, 0, 0]
+    Thrusters:
+    - Name: Port Propeller
+      Position: [0, -1, 0]
+      MaxRPM: 1800
+      MaxPower: 2525
+    - Name: Stbd Propeller
+      Position: [0, 1, 0]
+      MaxRPM: 1800
+      MaxPower: 2525
+  - Name: Ship
+Vessels:
+  - Name: Tug
+    VesselType: Escort Tug
+    Draught: Draught1
+    InitialPosition: [0, 0, 0]
+    Orientation: [0, 0, 0]
+  - Name: Tanker
+    VesselType: Ship
+    Draught: Draught1
+    InitialPosition: [0, 0, 0]
+    Orientation: [0, 0, 0]
+    Speed: 8
