@@ -172,16 +172,61 @@ https://www.simplilearn.com/tutorials/aws-tutorial/aws-interview-questions
   - value should be type `string`
   3 Resources
   4 Parameters
-    - allows us to Input custom values each time we create or update the stack
+    - allows us to Input custom values each time we create or update the stack during run time
   5 Mappings
+    - Allows you to map keys to a corresponding named value that you specify in conditional parameter
+    - `Fn::FindInMap`
   6 Outputs
   7 Metadata
     - Provides more information about cf template
   8 Conditions
-    - compare and conditionally create resouces
+    - compare and conditionally create resources if it is true else it is ignored
+    - `Fn::Or` `Fn::Not` `Fn::And` `Fn::Equals` `Fn::If`
   9 Transform
 
+## Template Resource Attributes
+  - Creation Policy
+  - Deletion Policy
+  - Depends On
+  - MetaData
+  - Update Policy
 
+## Intrinsic functions:
+  - `Fn::GetAtt` Used for getting values for the resources which are already created for output purpose or for nested stack
+    - Shortcut
+      - `!GetAtt myELB.DNSName`
+      - GetAtt logicalName.AttributeName
+  - `Fn::FindInMap` returns the value corresponding to keys in a two-level map that is declared in the Mappings section
+    `!FindInMap [ MapName, TopLevelKey, SecondLevelKey ]`
+    - Example:
+      ```
+      Mappings:
+        AWSInstanceType2Arch:
+          t1.micro:
+            Arch: HVM64
+          t2.nano:
+            Arch: HVM64
+          t2.micro:
+            Arch: HVM64
+          t2.small:
+            Arch: HVM64
+        AWSRegionArch2AMI:
+          us-east-1:
+            HVM64: ami-0080e4c5bc078760e
+            HVMG2: ami-0aeb704d503081ea6
+          us-west-2:
+            HVM64: ami-01e24be29428c15b2
+            HVMG2: ami-0fe84a5b4563d8f27
+      ```
+      ```
+      Fn:FindInMap:
+        - AWSRegionArch2AMI
+        - !Ref AWS::Region
+        - Fn:FindInMap:
+          - AWSInstanceType2Arch
+          - Ref: InstanceType
+          - Arch
+      ```
 
 # IAM
 

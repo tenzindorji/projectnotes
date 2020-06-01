@@ -363,10 +363,10 @@ Resources:
       KeyName:
         Ref: KeyName
       ImageId:
-        Fn::FindInMap:
+        Fn::FindInMap: #Return value is from mapping is ami-01e24be29428c15b2
         - AWSRegionArch2AMI
         - Ref: AWS::Region
-        - Fn::FindInMap:
+        - Fn::FindInMap: #Find the type of architecture. Return value from mappings is HVM64
           - AWSInstanceType2Arch
           - Ref: InstanceType
           - Arch
