@@ -16,8 +16,8 @@
   - Avoid ranges the overlap with other networks that which you might connect
   - subnets
     - subnet1 `172.31.0.0/24`
-    - subnet2 `172.31.0.1/24`
-    - subnet3 `172.31.0.2/24`
+    - subnet2 `172.31.1.0/24`
+    - subnet3 `172.31.2.0/24`
   - Route table
     - contain rules for which packages go where
     - Your vpc has default(main) route table
@@ -54,4 +54,4 @@
   - Add S3 VPC end point entry in route table
 
 ## VPC End Points
-  - Is created under VPC end point and are automatically added to route table 
+  - Is created under VPC end point and are automatically added to route table
