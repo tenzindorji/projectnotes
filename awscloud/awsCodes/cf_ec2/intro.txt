@@ -1,0 +1,61 @@
+
+Tell me about your experience:
+
+My name is Tenzin Dorji, I am from Bhutan. I did my graduation in Electronics and Communications from  India.
+I started my career in Accenture India in the year 2012 and worked there for 4 years. In 2015,
+I got opportunity to move to New Jersey to work from client location Merck(Pharma Company).
+
+My primary role was design, maintenance, support on prem web infrastructure to host java base applications.
+I used to provide my expertise to dev team with hosting issues on 4000 plus websites.
+I did lot of complex redirections, and migrated around 20 plus applications from on perm website to Cloud.
+
+I was primary technical point of contact force www.merck.com. I designed and created jenkin pipeline for
+deployment and releases. Due to pipeline, release and deployment was fast and simless for client.
+This was one of the mile stone achievement.
+
+
+I created couple of automations during this tenure like log rotation, system monitoring like CPU, Disk and memory usage.
+This help greatly during oncall and was able to detects issues before users reports.
+
+Then gradually I took up additional roles on AWS Cloud, Pivotal Cloud Foundry and change management.
+Later my role was mostly on Pivotal Cloud Foundry, and there I used to automate infrastructure deployment, user provisioning
+patching and upgrade, set up monitoring.
+
+I used to worked closing with clients, platform team and offshore team.
+
+
+Beginning of last year, I got opportunity to come to bay area through Kforce to work for Intuit.
+Here I am working as SRE for Financial Data Platform team. This is an infrastructure layer between Intuit
+products like turbo tax, mint, quick-books and Financial institutions.
+
+There are around 60 plus services using financial Data platform. We have a team of 12 SREs in US and 5 in India.
+We provide support to dev team, perform deployment, setup monitoring, maintain infrastructure, upgrade, patching
+, security fixes, creating automations, and also migration.
+
+Here, We follow two types of deployment model. One using chef which is old way of deployment and another is through spinnaker UI
+Both model follows blue and green deployment for zero down time. Intuit has planned to migrate all the services to Kubernetes.
+All the tax flow services are already migrated to Kubernetes.
+
+In the mid of last year, I took up responsibility to reduce signal to noise ratio, we were getting 100s of noisy alerts every
+day like 6 months ago, now we get less alerts and are actual alerts.
+
+Also, I took up responsibility to optimize AWS cost for entire financial data platform area and upgrade splunk forwarder.
+
+We have oncall on rotation bases and I have been oncall many times.
+
+
+Lastly, I am a good team player and loved to learn new things.
+
+
+
+
+
+
+
+
+I love photography, like to travel a lot and also like to cook.  I loved to play Tennis and Ping Pong.
+
+
+What I observed here in California is its diversity and I was really amazed by it.
+
+I lived by the Moto “Be true to yourself, that’s the secret of happiness”.
