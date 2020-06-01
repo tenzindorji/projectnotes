@@ -11,16 +11,16 @@
 
 Relevant files: `/etc/passwd` (user information), `/etc/shadow` (encrypted passwords), `/etc/group` (group information) and `/etc/sudoers` (configuration for sudo).\
 
-Find Kernal version: `uname -a`
+Find Kernal version: `uname -a` \
 
-Find current IP address
-Old way: `ifconfig` New way: `ip`
-How to check free disk space: `df -ah`
-How do you manage services on a system?
-Newer system: `systemd`
-`service <service_name> stop/start/status/restart`
+Find current IP address\
+Old way: `ifconfig` New way: `ip` \
+How to check free disk space: `df -ah`\
+How do you manage services on a system?\
+Newer system: `systemd`\
+`service <service_name> stop/start/status/restart`\
 
-Login to multiple linux servers: `csshx IP IP IP`
+Login to multiple linux servers: `csshx IP IP IP`\
 
 # What is /etc/sudoers ?
 ```
