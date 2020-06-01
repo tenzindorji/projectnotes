@@ -352,6 +352,9 @@ http://iserverinc.us/blog-files/blogs/blog-links/Create-RAID-With-Linux/How-to-c
 
 # Logical Volume management(LVM)
   - Physical Vol
+    - Before proceeding with below steps, need to need EBS vol and attached them to vol.
+      Find list of vols:
+      `lsblk`
     - Define physical
       ```
         #create physical vol
@@ -375,8 +378,9 @@ http://iserverinc.us/blog-files/blogs/blog-links/Create-RAID-With-Linux/How-to-c
     lvcreate -L 20G -n Second_Drive Group_Vol
     ```
   - Create File System with LV:
-    `mtfs -t file_system(ext4 or ext3) /dev/group_vol/logical_vol`
+    `mkfs -t file_system(ext4 or ext3) /dev/group_vol/logical_vol`
   - mount LV:
+    `mkdir /mount_point`
     `mount -t file_system /dev/group_vol/logical_vol /mount_point`
 
   - Increase size on existing LVM(dynamic extension)
@@ -666,4 +670,77 @@ perl -p -i -e 's/\R//g;' filename
 google Doc: Vlookup:
 ```
 =iferror(VLOOKUP(A64,Sheet33!$A$1:$C$264,3,False),0)
+```
+
+
+
+# Outputs:
+## Creating LVM outputs:
+```
+[ec2-user@ip-172-31-5-95 ~]$ sudo su
+[root@ip-172-31-5-95 ec2-user]# lsblk
+NAME    MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+xvda    202:0    0   8G  0 disk
+└─xvda1 202:1    0   8G  0 part /
+xvdh    202:112  0  10G  0 disk
+xvdf    202:80   0  10G  0 disk
+xvdg    202:96   0   8G  0 disk
+
+[root@ip-172-31-5-95 ec2-user]# pvcreate /dev/xvdh
+  Physical volume "/dev/xvdh" successfully created.
+[root@ip-172-31-5-95 ec2-user]# pvcreate /dev/xvdf
+  Physical volume "/dev/xvdf" successfully created.
+[root@ip-172-31-5-95 ec2-user]# pvcreate /dev/xvdg
+  Physical volume "/dev/xvdg" successfully created.
+
+[root@ip-172-31-5-95 ec2-user]# pvscan
+  PV /dev/sdf                      lvm2 [10.00 GiB]
+  PV /dev/sdh                      lvm2 [10.00 GiB]
+  PV /dev/sdg                      lvm2 [8.00 GiB]
+  Total: 3 [28.00 GiB] / in use: 0 [0   ] / in no VG: 3 [28.00 GiB]
+
+[root@ip-172-31-5-95 ec2-user]# vgcreate group_vol /dev/xvdh
+  Volume group "group_vol" successfully created
+[root@ip-172-31-5-95 ec2-user]# vgextend group_vol /dev/xvdf /dev/xvdg
+  Volume group "group_vol" successfully extended
+
+[root@ip-172-31-5-95 ec2-user]# pvscan -v
+    Wiping internal VG cache
+    Wiping cache of LVM-capable devices
+  PV /dev/sdh   VG group_vol       lvm2 [10.00 GiB / 10.00 GiB free]
+  PV /dev/sdf   VG group_vol       lvm2 [10.00 GiB / 10.00 GiB free]
+  PV /dev/sdg   VG group_vol       lvm2 [8.00 GiB / 8.00 GiB free]
+  Total: 3 [27.99 GiB] / in use: 3 [27.99 GiB] / in no VG: 0 [0   ]
+[root@ip-172-31-5-95 ec2-user]# lvcreate -L 6G -n first_drive group_vol
+  Logical volume "first_drive" created.
+
+  [root@ip-172-31-5-95 ec2-user]# mkfs -t ext4 /dev/group_vol/first_drive
+  mke2fs 1.43.5 (04-Aug-2017)
+  Creating filesystem with 1572864 4k blocks and 393216 inodes
+  Filesystem UUID: 0aa61e03-f4b0-4a06-9213-8ad57e239e33
+  Superblock backups stored on blocks:
+  	32768, 98304, 163840, 229376, 294912, 819200, 884736
+  Allocating group tables: done
+  Writing inode tables: done
+  Creating journal (16384 blocks): done
+  Writing superblocks and filesystem accounting information: done
+
+  [root@ip-172-31-5-95 ec2-user]# mkdir /mount_point
+
+  [root@ip-172-31-5-95 ec2-user]# mount -t ext4 /dev/group_vol/first_drive /mount_point
+  [root@ip-172-31-5-95 ec2-user]# df -h
+  Filesystem                         Size  Used Avail Use% Mounted on
+  devtmpfs                           987M   76K  987M   1% /dev
+  tmpfs                              997M     0  997M   0% /dev/shm
+  /dev/xvda1                         7.8G  1.1G  6.6G  14% /
+  /dev/mapper/group_vol-first_drive  5.9G   24M  5.6G   1% /mount_point
+  [root@ip-172-31-5-95 ec2-user]# cd /mount_point/
+  [root@ip-172-31-5-95 mount_point]# ls -ltr
+  total 16
+  drwx------ 2 root root 16384 Jun  1 22:54 lost+found
+  [root@ip-172-31-5-95 mount_point]# touch file
+  [root@ip-172-31-5-95 mount_point]# ls -ltr
+  total 16
+  drwx------ 2 root root 16384 Jun  1 22:54 lost+found
+  -rw-r--r-- 1 root root     0 Jun  1 22:56 file
 ```
