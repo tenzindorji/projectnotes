@@ -5,12 +5,12 @@ My name is Tenzin Dorji, I am from Bhutan. I did my graduation in Electronics an
 I started my career in Accenture India in the year 2012 and worked there for 4 years. In 2015,
 I got opportunity to move to New Jersey to work from client location Merck(Pharma Company).
 
-My primary role was design, maintenance, support on prem web infrastructure to host java base applications.
+My primary role was to design, maintenance, support on prem web infrastructure for hosting java base applications.
 I used to provide my expertise to dev team with hosting issues on 4000 plus websites.
 I did lot of complex redirections, and migrated around 20 plus applications from on perm website to Cloud.
 
-I was primary technical point of contact force www.merck.com. I designed and created jenkin pipeline for
-deployment and releases. Due to pipeline, release and deployment was fast and simless for client.
+I was primary technical point of contact for www.merck.com. I designed and created jenkin pipeline for
+deployment and releases to over come slow legacy deployment.  Due to pipeline, release and deployment was fast and simless for client.
 This was one of the mile stone achievement.
 
 
