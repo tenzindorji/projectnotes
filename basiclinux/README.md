@@ -11,36 +11,17 @@
 
 Relevant files: `/etc/passwd` (user information), `/etc/shadow` (encrypted passwords), `/etc/group` (group information) and `/etc/sudoers` (configuration for sudo).\
 
-Find Kernal version:
-```
-uname -a
-```
+Find Kernal version: `uname -a`
+
 Find current IP address
-Old way:
-```
-ifconfig
-```
-New way:
-```
-ip
-```
-How to check free disk space:
-```
-df -ah
-```
+Old way: `ifconfig` New way: `ip`
+How to check free disk space: `df -ah`
 How do you manage services on a system?
-Newer system
-```
-systemd
-```
-Older system:
-```
-service <service_name> stop/start/status/restart
-```
-Login to multiple linux servers:
-```
-csshx IP IP IP
-```
+Newer system: `systemd`
+`service <service_name> stop/start/status/restart`
+
+Login to multiple linux servers: `csshx IP IP IP`
+
 # What is /etc/sudoers ?
 ```
 root ALL=(ALL:ALL) ALL
@@ -55,10 +36,8 @@ root ALL=(ALL:ALL) ALL
 - you will find this folder in each partition of the disk, like root and any other mounts
 
 # tar command to zip the file
-```
-tar -czvf test.tar dir_or_filename
-tar -xvf test.tar
-```     
+`tar -czvf test.tar dir_or_filename`
+`tar -xvf test.tar`   
 
 # What does the immutable bit do to a file?
 * makes files unchangable so that it cannot be erased during software upgrades
