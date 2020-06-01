@@ -5,3 +5,6 @@
 terraform.tfstate
 *.tfstate*
 terraform.tfvars
+
+*.ppk
+*.pem
