@@ -663,6 +663,9 @@ google Doc: Vlookup:
 =iferror(VLOOKUP(A64,Sheet33!$A$1:$C$264,3,False),0)
 ```
 
+## Find the largest file in the dir
+`ls -lh ~/dir |sort -rh|head -1`
+`du -sh ~/dir |sort -rh|head -1`  this will also list directory.
 
 
 # Outputs:
