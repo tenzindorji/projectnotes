@@ -40,15 +40,15 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 
 6. Create kubernetes cluster defination
 ```
-kops create cluster \
---state=${KOPS_STATE_STORE} \
---node-count=2 \
---master-size=t2.micro \
---node-size=t2.micro \
---zones=us-east-2a,us-east-2b \
---name=${KOPS_CLUSTER_NAME} \
---dns private \
---master-count 1
+    kops create cluster \
+    --state=${KOPS_STATE_STORE} \
+    --node-count=2 \
+    --master-size=t2.micro \
+    --node-size=t2.micro \
+    --zones=us-west-2a,us-west-2b \
+    --name=${KOPS_CLUSTER_NAME} \
+    --dns private \
+    --master-count 1
 ```
 7. Create kubernetes cluster
 `kops update cluster --yes`
@@ -56,6 +56,19 @@ kops create cluster \
 
 8. To connect to the master
 `ssh admin@api.tenzindorji.in`
+
+9. Deploy app.
+  ```
+  kubectl get nodes
+  kubectl get po
+  kubectl run k8learning app --image=simplilearndockerhub/my-nodeapp --replicas=2 --port=8080
+  kubectl get po
+  kubectl get deployment
+  kubectl expose deployment k8learning
+  kubectl get svc
+  curl http://100.70.84.215:8080
+  kubectl get service -o wide
+  ```
 
 # Destroy the kubernetes cluster
 `kops delete cluster  --yes`
