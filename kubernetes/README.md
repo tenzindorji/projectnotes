@@ -22,11 +22,11 @@
 # Kubernets Architecture
   1. kubectl (work station)
   2. master nodes:\
-    1. ETCD (Cluster Store )\
+    1. ETCD (Cluster Store )
       - This component stores the configuration details and essential values\
       - It communicates with all other components to receive commands and work in order to perform action\
       - It also manages networking rules and post forwarding activity\
-    2. Controller manager\
+    2. Controller manager
       - It is a deamon (server) that runs in a continuous loop  and responsible for gathering information\
         sending it to an API server\
       - It works to get the shared set of clusters and change them to desire state of the server\
