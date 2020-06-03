@@ -67,7 +67,7 @@
   - Persistent vol
     -
 # Software components
- - Container
+- Container
   - The programs are bundled up into a single file(known as container) and shared on the internet.\
     Any one can download and deploy it with easy setup
   - Multiple programs are added to a single container. Limit to one process per container  as it will be \
@@ -85,24 +85,24 @@
   - It can provide LB, SSL termination and name-based virtual hosting.
 
 # Other components:
-  1. Replication controller
+1. Replication controller
     - It is used to define pod lifecycle, rather than to create pods directly
-  2. Selector
+2. Selector
     - A Selector expression matches labels to find specific resources
-  3. Labels
+3. Labels
     - They are key value pairs that are attached to the objects, such as pods
-  4. Replication Set
+4. Replication Set
     - they are define how many replicas of each pod will be running and manage and replace pods when they die
-  6. Annotation
+6. Annotation
     - It is a label with much data capacity. It is used only for storing data that is not searched but it is \
       required by the resources.
-  7. Name
+7. Name
     - Name by which resource is identified
-  8. Volume
+8. Volume
     - A Vol is directory with data which is accessible to a container
-  9. Namespace
+9. Namespace
     - It provides additional qualification to a resource name
-  10. service
+10. service
     - It is a abstraction on  top of pods which provides a single  IP address and DNS name by which \
       the pods can be accessed
 
@@ -154,4 +154,4 @@
 9. What is the role of Cloud Controller manager ?
   - Is a essential component for persistent storage, the abstraction of code specific code from core kubernetes code\
     network routing
-10.
+10. 
