@@ -35,10 +35,10 @@
           - it is responsible for distributing work load and it stores resource usage information of every node\
           - It tracks how the working load is used on the cluster and, places the load on available resources.\
     4. API Server
-  3. nodes, each nodes has multiple pods and each pod can have multiple containers(dockers)
+  3. nodes, each nodes has multiple pods and each pod can have multiple containers(dockers)\
     1. Docker\
     2. kubelet\
-    3. Kubernetes proxy\
+    3. Kubernetes proxy
 
 
 # Docker Swarm
