@@ -117,13 +117,13 @@
     - support multi platform
     - Huge community support
 2. What is difference between docker and kubernetes
-  |Features|Kubernetes|Docker|
-  |---|---|---|
-  |Deployment|Applications are deployed as a combination of pods, deployment, and services|Applications are deployed in a form of services|
-  |Autoscaling|Available|Not Available|
-  |Health Checks|Healths of two kinds: liveliness and readiness|The health checks are limited to services|
-  |setup|complicated to setup|Docker setup is easy|
-  |Tolerance Ration|High Fault tolerence |Low Fault tolerence|
+|Features|Kubernetes|Docker|
+|---|---|---|
+|Deployment|Applications are deployed as a combination of pods, deployment, and services|Applications are deployed in a form of services|
+|Autoscaling|Available|Not Available|
+|Health Checks|Healths of two kinds: liveliness and readiness|The health checks are limited to services|
+|setup|complicated to setup|Docker setup is easy|
+|Tolerance Ration|High Fault tolerence |Low Fault tolerence|
 
 3. What are notable feature of Kubernetes
   - Container Balancing
@@ -154,4 +154,4 @@
 9. What is the role of Cloud Controller manager ?
   - Is a essential component for persistent storage, the abstraction of code specific code from core kubernetes code\
     network routing
-10. 
+10.
