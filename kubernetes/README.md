@@ -116,7 +116,7 @@
     - Effective persistent storage
     - support multi platform
     - Huge community support
-2. What is difference between docker and kubernetes
+2. What is difference between docker and kubernetes\
 |Features|Kubernetes|Docker|
 |---|---|---|
 |Deployment|Applications are deployed as a combination of pods, deployment, and services|Applications are deployed in a form of services|
