@@ -28,17 +28,17 @@
           - It also manages networking rules and post forwarding activity\
     2. Controller manager
           - It is a deamon (server) that runs in a continuous loop  and responsible for gathering information\
-          sending it to an API server\
+          sending it to an API Servers
           - It works to get the shared set of clusters and change them to desire state of the server\
-    3. Scheduler\
+    3. Scheduler
           - Assigns task to the slave nodes\
           - it is responsible for distributing work load and it stores resource usage information of every node\
           - It tracks how the working load is used on the cluster and, places the load on available resources.\
-    4. API Server\  
+    4. API Server
   3. nodes, each nodes has multiple pods and each pod can have multiple containers(dockers)
-    1. Docker
-    2. kubelet
-    3. Kubernetes proxy
+    1. Docker\
+    2. kubelet\
+    3. Kubernetes proxy\
 
 
 # Docker Swarm
