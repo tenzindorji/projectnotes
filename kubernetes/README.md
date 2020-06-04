@@ -154,4 +154,34 @@
 9. What is the role of Cloud Controller manager ?
   - Is a essential component for persistent storage, the abstraction of code specific code from core kubernetes code\
     network routing
-10.
+10. Rollback
+  -  To display all the previous deployments
+    `kubectl rollout history deployment <deployment_name>`
+  -  To Restore the last deployment
+    `kubectl rollout undo deployment <deployment_name>`
+11. What is init container
+  - A pod can have many containers. Init container gets executed before any other containers run in the pod
+12. How do you package kubernetes application
+  - helm is a package manager which allow user to package, configure and deploy the application and services to\
+    the kubernetes cluster
+    ```
+    helm search redis
+    helm install stable/redis
+    helm ls
+    ```
+13. Zero down time deployment
+  - By default deployment in Kubernetes using rolling update as strategy
+    - Update the ngnix image
+      `kubectl set image deployment ngnix ngnix=ngnix:1.15`
+    - Check the replicas set
+      `kubectl get replicasets`
+    - Check the status of deployment rollout
+      `kubectl rollout history deployment ngnix`
+    - Check the revision in the deployment
+      `kubectl rollout history deployment ngnix`
+14. How do you monitor the pods that is always running
+  - A liveness probe always checks if an application in a pod is running,\
+    If the check fails, the container will get restarted
+15. How do you drain traffic for maintenance
+  - `kubectl drain <nodename>`
+  - `kubectl uncordon <nodename>` # put the node back to rotation
