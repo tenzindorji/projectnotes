@@ -1,3 +1,3 @@
-FROM busybox
-COPY /hello /
-RUN cat /hello
+FROM tenzindorji/rss-php-nginx:v1
+COPY vhost.conf /opt/docker/etc/nginx/vhost.conf
+EXPOSE 88
