@@ -115,3 +115,5 @@ ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
     - image
     - volumes
 ## Docker layers architecture
+
+# Docker compose
