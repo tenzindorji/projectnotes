@@ -11,13 +11,15 @@
   - stop container \
     `docker stop <container_name>`
   - remove container permanently\
-    `docker rm <container_name>`
+    `docker rm <container_name>`\
+    `docker container rm $(docker container ls -aq)` #remove all stopped container
   - list images\
     `docker images`
   - remove images\
     `docker rmi <image_name>`\
     `docker rmi nginx:alpine`\
-    `docker rmi nginx:latest`
+    `docker rmi nginx:latest` \
+    `docker image prune` # remove unused dangling images
 
   - download images\
     `docker run nginx` #it download and run the container\
@@ -43,6 +45,9 @@
   - Vol mapping\
     `docker run -v /opt/external_data_store:/var/lib/mysql_local_mount <container_name>`\
     `docker run -v data_volume2:/var/lib/mysql mysql` # if data_volume2 is not create, docker will automatically create and mount it.
+  - list local vol \
+    `docker volume ls` \
+    `docker volume prune` #remove unused vol
   - Inspect container\
     `docker inspect <container_name>` #all details of the container
   - Container log\
@@ -75,26 +80,26 @@ ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
 ```
 
 - create the image by running below command
-  `docker build Dockerfile -t tenzin/my-custom-app` #creates image locally on your system and tag it
+  `docker build Dockerfile -t tenzin/my-custom-app` #creates image locally on your system and tag it \
   `docker push tenzin/my-custom-app` #push to docker hub registry  
 
 ## CMD VS ENTRYPOINT
 
 # Networking in docker
 ## Docker create three network automatically
-1. Bridge (default)
-  `docker run ubuntu`
-    - private internal network created by docker(172.17.x.x.)
+1. Bridge (default)\
+  `docker run ubuntu`\
+    - private internal network created by docker(172.17.x.x.)\
     - N number of container can be accessed from outside docker host
 2. none
-  `docker run Ubuntu --network=none`
-    - No access to any of the the container from outside docker host
+  `docker run Ubuntu --network=none`\
+    - No access to any of the the container from outside docker host\
     - They run in a isolated network.
 3. host
-  `docker run Ubuntu --network=host`
+  `docker run Ubuntu --network=host`\
     - only one container will be able to access from outside docker host
 
-- By default docker creates only one internal network
+- By default docker creates only one internal network\
 - If you want to create isolated custom network inside docker, use below command
   ```
   docker network create \
@@ -102,8 +107,13 @@ ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
     --subnet 192.168.x.x./24
     custom-isolated-network
     ```
-  `docker network ls` #list all the networks
+  `docker network ls` #list all the networks\
   `docker inspect <container_name` #there is the section where it has network details
+- List network\
+  `docker network ls` \
+  `docker network rm <network_id>`\
+  `docker network prune`
+
 
 ## Containers can reach each other with their names
   - Docker has a build in dns server which resolves container_name to internal IP address
