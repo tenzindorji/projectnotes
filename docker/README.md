@@ -2,49 +2,50 @@
 ## Docker commands
   - practice lab: https://kodekloud.com/p/docker-labs
 
-  - run - starts the container
-  `docker run nginx`
+  - run - starts the container \
+  `docker run nginx` \
   `docker run --name webapp nginx:1.14-alpine`
-  - list the docker container names
-    `docker ps`
+  - list the docker container names \
+    `docker ps` \  
     `docker ps -a` # gets all the container even stopped ones
-  - stop container
+  - stop container \
     `docker stop <container_name>`
-  - remove container permanently
+  - remove container permanently\
     `docker rm <container_name>`
-  - list images
+  - list images\
     `docker images`
-  - remove images
-    `docker rmi <image_name>`
-    `docker rmi nginx:alpine`
+  - remove images\
+    `docker rmi <image_name>`\
+    `docker rmi nginx:alpine`\
     `docker rmi nginx:latest`
-  - download images
-    `docker run nginx` #it download and run the container
+
+  - download images\
+    `docker run nginx` #it download and run the container\
     `docker pull nginx` #pull the image and don't run the container \
     `docker pull nginx:1.14-alpine`
-  - run command on running docker container
+  - run command on running docker container\
     `docker exec <container_name> cat /etc/hosts`
-  - Run attach and deattach
-    `docker run nginx` #runs in foreground and stdout to console
-    `docker run -d nginx` # runs in background and use `docker ps` to see the running container
+  - Run attach and deattach\
+    `docker run nginx` #runs in foreground and stdout to console\
+    `docker run -d nginx` # runs in background and use `docker ps` to see the running container\
     `docker attach <container_id_firstfewchar>` #to bring running container to foreground
-  - login to docker container with interactive and terminal mode
+  - login to docker container with interactive and terminal mode\
     `docker exec -it <docker PID> bash`
-  - tag
+  - tag\
     `docker pull nginx:1.14-alpine` #After : is the tag which is version of the app. \
     If you do not mention tag, docker takes default latest tag.
-  - port mapping
-    `docker run -p 80:5000 <container_name>`
-      - Container runs on docker host and every container is assigned with private IP which is not exposed to outside.
+  - port mapping\
+    `docker run -p 80:5000 <container_name>`\
+      - Container runs on docker host and every container is assigned with private IP which is not exposed to outside.\
       - Mapped docker host port to container port and use docker host IP to access the App.
-  - Create vol
+  - Create vol\
     `docker volume create data_volume`
-  - Vol mapping
-    `docker run -v /opt/external_data_store:/var/lib/mysql_local_mount <container_name>`
+  - Vol mapping\
+    `docker run -v /opt/external_data_store:/var/lib/mysql_local_mount <container_name>`\
     `docker run -v data_volume2:/var/lib/mysql mysql` # if data_volume2 is not create, docker will automatically create and mount it.
-  - Inspect container
+  - Inspect container\
     `docker inspect <container_name>` #all details of the container
-  - Container log
+  - Container log\
     `docker logs <container_name>`
 
 Container only lives as long as process inside the container is running. Once it is completed, it exits and show status as exited
