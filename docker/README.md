@@ -55,6 +55,67 @@
 
 Container only lives as long as process inside the container is running. Once it is completed, it exits and show status as exited
 
+## How to create docker image manually
+1. Create the free account in https://hub.docker.com
+2. Need to install docker in your local
+3. login to docker\
+`docker login`
+4. create the php container \
+`docker run -dP webdevops/php-nginx`
+5. login to container \
+`docker exec -it <container_name> /bin/bash`
+6. Install and configure app
+```
+curl https://codeload.github.com/simplepie/simplepie/zip/1.4.3 > simplepie1.4.3.zip
+unzip simplepie1.4.3.zip
+mkdir /app/php
+mkdir /app/cache
+mkdir /app/php/library
+cp -r s*/library/* /app/php/library/.
+cp s*/autoloader.php /app/php/.
+chmod 777 /app/cache
+vi /app/rss.php
+```
+```
+<?php
+require_once('php/autoloader.php');
+$feed = new SimplePie();
+$feed->set_feed_url("http://rss.cnn.com/rss/edition.rss");
+$feed->init();
+$feed->handle_content_type();
+?>
+<html>
+<head><title>Sample SimplePie Page</title></head>
+<body>
+<div class="header">
+<h1><a href="<?php echo $feed->get_permalink(); ?>"><?php echo $feed->get_title(); ?></a></h1>
+<p><?php echo $feed->get_description(); ?></p>
+</div>
+<?php foreach ($feed->get_items() as $item): ?>
+<div class="item">
+<h2><a href="<?php echo $item->get_permalink(); ?>"><?php echo $item->get_title(); ?></a></h2>
+<p><?php echo $item->get_description(); ?></p>
+<p><small>Posted on <?php echo $item->get_date('j F Y | g:i a'); ?></small></p>
+</div>
+<?php endforeach; ?>
+</body>
+</html>
+```
+
+`exit`
+
+7. Test\
+  `curl http://localhost:32773/rss.php`
+
+8. Create new image \
+`docker commit -m "Message" -a "Author Name" [containername] [imagename]`\
+`docker commit -m "Added RSS" -a "Nick Chase" <containername> tenzindorji/rss-php-nginx:v1`
+
+`docker push tenzindorji/rss-php-nginx:v1`
+
+9. Remove container and image and build it using new image
+
+
 ## How to create a docker image
 - write docker file in below sequence
 - Once image is created, it cannot be edited.
@@ -65,6 +126,7 @@ Container only lives as long as process inside the container is running. Once it
   6. Copy source code to /opt/ folder
   7. run the web server using "flask" command
 
+- Dockerfile
 ```
 FROM Ubuntu
 
