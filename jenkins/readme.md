@@ -5,7 +5,7 @@
 yum update -y \
 yum install wget\
 sudo yum install java-1.8.0-openjdk\
-wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.0.M10/bin/apache-tomcat-9.0.0.M10.tar.gz\
+wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.0.M10/bin/apache-tomcat-9.0.0.M10.tar.gz \
 tar -xvf apache-tomcat-9.0.0.M10.tar.gz\
 mv apache-tomcat-9.0.0.M10 tomcat9\
 vi tomcat9/conf/tomcat-users.xml
@@ -22,7 +22,7 @@ vi tomcat9/conf/tomcat-users.xml
 </tomcat-users>
   ```
 
-tomcat9/webapps/manager/META-INF/context.xml \
+tomcat9/webapps/manager/META-INF/context.xml
   - comment out Valve as below
 
 ```
