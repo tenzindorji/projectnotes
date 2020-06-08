@@ -182,6 +182,9 @@
 14. How do you monitor the pods that is always running
   - A liveness probe always checks if an application in a pod is running,\
     If the check fails, the container will get restarted
+  - readiness probe
+      - 
+
 15. How do you drain traffic for maintenance
   - `kubectl drain <nodename>`
   - `kubectl uncordon <nodename>` # put the node back to rotation

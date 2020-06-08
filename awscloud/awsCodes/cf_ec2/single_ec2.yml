@@ -14,7 +14,7 @@ Parameters:
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
-    Default: t2.small
+    Default: t2.micro
     AllowedValues:
     - t1.micro
     - t2.nano
@@ -299,7 +299,8 @@ Mappings:
       HVM64: ami-0080e4c5bc078760e
       HVMG2: ami-0aeb704d503081ea6
     us-west-2:
-      HVM64: ami-01e24be29428c15b2
+      HVM64: ami-02f147dfb8be58a10 #redhat
+      #HVM64: ami-003634241a8fcdec0 #ubuntu
       HVMG2: ami-0fe84a5b4563d8f27
     us-west-1:
       HVM64: ami-0ec6517f6edbf8044
@@ -362,6 +363,14 @@ Resources:
       - Ref: InstanceSecurityGroup
       KeyName:
         Ref: KeyName
+
+      #UserData:
+      #  Fn:Base64 !Sub  |
+      #    #! /bin/bash
+      #    yum update -y
+      #    yum install httpd -y
+      #    service httpd start
+      #    echo "<html><body><h1>Hello from Server ${AWS::Region}</h1></body></html>" > /var/www/html/index.html
       ImageId:
         Fn::FindInMap: #Return value is from mapping is ami-01e24be29428c15b2
         - AWSRegionArch2AMI
@@ -385,6 +394,12 @@ Resources:
         ToPort: '80'
         CidrIp:
           Ref: SSHLocation
+      - IpProtocol: tcp
+        FromPort: '8080'
+        ToPort: '8080'
+        CidrIp:
+          Ref: SSHLocation
+
 Outputs:
   InstanceId:
     Description: InstanceId of the newly created EC2 instance
