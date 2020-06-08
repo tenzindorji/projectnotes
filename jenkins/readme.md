@@ -36,5 +36,5 @@ tomcat9/webapps/manager/META-INF/context.xml
 
 ./bin/startup.sh \
 
-cd
+cd \
 wget http://updates.jenkins-ci.org/download/war/2.7.3/jenkins.war
