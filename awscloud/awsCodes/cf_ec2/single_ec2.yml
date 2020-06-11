@@ -299,7 +299,8 @@ Mappings:
       HVM64: ami-0080e4c5bc078760e
       HVMG2: ami-0aeb704d503081ea6
     us-west-2:
-      HVM64: ami-02f147dfb8be58a10 #redhat
+      HVM64: ami-086b16d6badeb5716
+      #HVM64: ami-02f147dfb8be58a10 #redhat
       #HVM64: ami-003634241a8fcdec0 #ubuntu
       HVMG2: ami-0fe84a5b4563d8f27
     us-west-1:

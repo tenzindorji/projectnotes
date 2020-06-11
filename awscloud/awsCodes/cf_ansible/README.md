@@ -18,4 +18,3 @@ su - ansadmin
   pip3 install ansible --user
   ansible --version
   ssh-keygen
-  
