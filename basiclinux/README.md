@@ -499,6 +499,11 @@ mysqldump -u root -ppassword --opt > /tmp/allmysqldatabases.sql #dump all the da
 mysqldump -u username -ppassword --databases databasename > /tmp/databasename.sql
 mysqldump -u username -ppassword databaname tablename > /tmp/tablename.sql
 
+Example:
+export DBUSER=dbuser_name
+mysqldump -h $DBUSER.chae9qykhqdp.us-west-2.rds.amazonaws.com  -u $DBUSER -p --ssl-ca=rds-combined-ca-bundle.pem --ssl-verify-server-cert databaseName > /tmp/databaseName-$DBUSER.sql
+
+
 mysql -u username -ppassword databasename < /tmp/databasename.sql #restore database.
 
 select * from <tablename> limit 5; #list only 5 rows
