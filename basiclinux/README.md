@@ -459,6 +459,10 @@ mysql --login-path=admin
 mysql -h hostname -u root -p
 mysql -u USERNAME -p
 
+#login with SSl certificate
+export DBUSER=e2e
+mysql -h $DBUSER.xxx.us-west-2.rds.amazonaws.com  -u $DBUSER -p --ssl-ca=rds-combined-ca-bundle.pem --ssl-verify-server-cert
+
 create database dbname;
 show databases;
 use dbname; #switch DB
@@ -495,14 +499,17 @@ select * from Customers where CustomerName like "Wil%";
 select Orders.OrderID, Orders.OrderDate, Customers.CustomerName from Orders
 inner join Customers on Orders.CustomerID=Customers.CustomerID;
 
+show variables like '%connection%';  
+
 mysqldump -u root -ppassword --opt > /tmp/allmysqldatabases.sql #dump all the databases
 mysqldump -u username -ppassword --databases databasename > /tmp/databasename.sql
 mysqldump -u username -ppassword databaname tablename > /tmp/tablename.sql
 
+
+
 Example:
 export DBUSER=dbuser_name
 mysqldump -h $DBUSER.chae9qykhqdp.us-west-2.rds.amazonaws.com  -u $DBUSER -p --ssl-ca=rds-combined-ca-bundle.pem --ssl-verify-server-cert databaseName > /tmp/databaseName-$DBUSER.sql
-
 
 mysql -u username -ppassword databasename < /tmp/databasename.sql #restore database.
 
