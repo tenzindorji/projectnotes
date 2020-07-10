@@ -1,52 +1,78 @@
-#Jenkins installation steps:
+#Jenkins Pipeline
+- commit module -- version controlled system
+- build module (UT/IT CI Jenkins) -- Selenium for testing
+- Testing Environment (User acceptance and load testing)
+- Production ready
 
-##user data:
+# What is Jenkin Pipeline(Jenkins file)
+- two ways of writing pipeline
+  - Declarative pipeline  - Groovy syntax
+    - code defined within pipeline block
+    ```
+    pipeline {
 
-yum update -y \
-yum install wget\
-sudo yum install java-1.8.0-openjdk\
-wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.0.M10/bin/apache-tomcat-9.0.0.M10.tar.gz \
-#jar xvf jenkins.war \
-tar -xvf apache-tomcat-9.0.0.M10.tar.gz\
-mv apache-tomcat-9.0.0.M10 tomcat9\
-vi tomcat9/conf/tomcat-users.xml
-  ```
-  <?xml version='1.0' encoding='utf-8'?>
-<tomcat-users>
-    <role rolename="manager-gui"/>
-    <role rolename="manager-script"/>
-    <role rolename="manager-jmx"/>
-    <role rolename="manager-jmx"/>
-    <role rolename="admin-gui"/>
-    <role rolename="admin-script"/>
-    <user username="admin" password="admin" roles="manager-gui,manager-script,manager-jmx,manager-status,admin-gui,admin-script"/>
-</tomcat-users>
-  ```
+    }
+    ```
+    - versioned control
 
-tomcat9/webapps/manager/META-INF/context.xml
-  - comment out Valve as below
+  - Scripted pipeline - Groovy syntax
+    - code is defined within node block
+    ```
+    node {
+
+    }
+    ```
+    - written on jenkins UI
+
+# Agent :
+- Instruct Jenkins to allocate an executor for the builds.
+## Agent have 4 Parameters:
+- Any: runs pipeline /stage on any available agent
+- None: Applied at the root of the pipeline, it indicates that there is no global agent for entire pipeline\
+and each stage must specify its own agent
+- Label : Executes the pipeline/stages on the labelled agent.
+- Docker: uses docker container as execution env for the pipeline or a specific stage
 
 ```
-<Context antiResourceLocking="false" privileged="true" >
-<!--
-  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
-         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
--->
-</Context>
+pipeline {
+  agent {
+    docker {
+      image 'ubuntu'
+    }
+  }
+
+}
 ```
 
-./bin/startup.sh \
+#Stages:
+  - It contains all the work and each stage performs a specific task
+  ```
+  pipeline {
+    agent any
+    stages {
+      stage ('build') {
+        ...
+      }
+      stage ('test') {
+        ...
+      }
+      stage ('deploy') {
+        ...
+      }
+    }
 
-cd \
-wget http://updates.jenkins-ci.org/download/war/2.7.3/jenkins.war
-
-From tomcat UI, deploy the jenkins war file\
-Context Path: /jenkins
-WAR or Directory URL: /root/jenkins.war
-
-
-#Install Jenkins on mac local
-1. brew install jenkins-lts
-2. sudo vi /usr/local/opt/jenkins-lts/homebrew.mxcl.jenkins-lts.plist
-    - change 171.0.0.1 to 0.0.0.0 to be accessible from anywhere
-3. brew services start jenkins-lts
+  }
+  ```  
+# Steps
+  - Steps are carried out in a sequence to execute a stage.
+  ```
+  pipeline {
+    agent any
+    stages {
+      stage ('build') {
+        steps {
+          echo 'running build phase...'
+        }
+      }
+    }
+  }
