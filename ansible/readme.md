@@ -1,7 +1,6 @@
 # Ansible basic
 It is a push type of configuration management tool
 
-
 # Install ansible in AWS EC2 instance
 1. https://github.com/ValaxyTech/DevOpsDemos/blob/master/Ansible/Ansible_installation_on_RHEL8.MD
 ```
