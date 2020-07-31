@@ -85,7 +85,6 @@ PATH=/usr/local/bin:$PATH
 [kubernetes-master] #kubernetes master server and its ip, user name is admin. User name was created during kops kubernetes setup
 18.236.86.11 ansible_user=admin
 ```
-
 - Validate the ansible
 `ansible all -m ping`
 

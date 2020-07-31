@@ -183,6 +183,7 @@ server=ip-172-31-5-189.us-west-2.compute.internal
 `puppet module install puppetlabs-tomcat`
 2. Create site.pp manifest file and add below content
 path: vi /etc/puppetlabs/code/environments/production/manifests/site.pp
+
 ```
 class {'java' :
   package => 'java-1.8.0-openjdk-devel',  
@@ -200,5 +201,5 @@ tomcat::instance {'default':
 `puppet resource service puppetserver ensure=stopped`
 `puppetserver ca setup` #regenerate the master CA certificate
 
-agent \
+agent
 `puppet agent -t` # this will generate client cert and also pull changes from master
