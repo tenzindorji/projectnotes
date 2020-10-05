@@ -12,6 +12,93 @@ mode => '0644'
 }
 }
 ```
+
+Double and single quotes meaning
+`$my_var = 'Hello '`
+`"${my_var}world"` translate to 'Hello world'
+`'${my_var}world'` translate to '${my_var}world' , it takes as it is
+
+variable to reference by ${}
+
+# Resources:
+```
+file {'/etc/motd':
+  ensure => 'file',
+  owner => 'root',
+  group => 'root',
+  mode => '0644',
+}
+```
+
+
+# package:
+```
+package {'mysql-server':
+  ensure => 'installed',
+  }
+```
+
+# Services and Facts
+- Configuration of service config file after package is install.
+```
+file {'/var/lib/pgsql/data/postgresql.conf':
+  ensure => 'file',
+  owner => 'root',
+  group => 'root',
+  mode => '0644',
+  content => 'listen_addresses = '192.168.0.10''
+}
+```
+- facts
+  - Puppets automatically creates a sets of variable for you called facts.
+    `facter -p` will list the system information of the node.
+
+
+- using facts variable to configure the config
+```
+file {'/etc/dummy/dummy.cfg':
+  ensure => 'file',
+  owner => 'root',
+  group => 'root',
+  mode => '0644',
+  content => 'Running on host $hostname',
+}
+```
+- starting the service
+```
+service {'sshd':
+  ensure => 'running',
+  enable => 'true',
+  }
+```
+# Resource relationship and Refresh event
+- it is achieved by using 'before/require' or 'notify/subscribe'
+- It should be Capitalized 
+```
+package { 'postgresql-server':
+  ensure => installed,
+  before => File['/var/lib/pgsql/data/postgresql.conf']
+}
+
+file { '/var/lib/pgsql/data/postgresql.conf':
+  ensure  => file,
+  owner   => 'root',
+  group   => 'root',
+  mode    => '0644',
+  content => "listen_addresses = '192.168.0.10'\n",
+  #require => Package['postgresql-server'],
+  notify => Service['postgresql']
+
+}
+
+service { 'postgresql':
+  ensure => running,
+  enable => true,
+ # subscribe => File['/var/lib/pgsql/data/postgresql.conf']
+}
+```
+
+
 # loops
 ```
 node default {
