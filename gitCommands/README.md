@@ -42,7 +42,7 @@
  git checkout master
  git pull
  git checkout yourbranch
- git rebase -i origin/master # pick only one latest commit and update pick to s to rest of the commits
+ git rebase -i origin/master # pick only one latest commit and update pick to "s" to rest of the commits, this will update the commit message.
                              # this will combine all the commits to one single commit
                              # Also keep one commit message, remove rest of commit messages which are not required
 git log # should see only one commit
