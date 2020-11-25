@@ -42,7 +42,7 @@
  git checkout master
  git pull
  git checkout yourbranch
- git rebase -i origin/master # One the last commit line and update pick to "s". DONOT delete any of the previous commit. Please as PICK. 
+ git rebase -i origin/master # On the last commit line and update pick to "s". DONOT delete any of the previous commit. Please as PICK. 
                              # this will combine all the commits to one single commit
                              # Also keep one commit message, remove rest of commit messages which are not required
 git log # should see only one commit
