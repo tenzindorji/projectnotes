@@ -22,6 +22,9 @@ Newer system: `systemd`\
 
 Login to multiple linux servers: `csshx IP IP IP`\
 
+## How to Encypt Password: Run below command in git bash
+`winpty openssl passwd -6 -salt $(head /dev/urandom | tr -dc 'a-zA-Z' | head -c 16)`
+
 # What is /etc/sudoers ?
 ```
 root ALL=(ALL:ALL) ALL
