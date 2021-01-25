@@ -606,12 +606,15 @@ How SSL handshake happens?
 
 # SSL Management
 ```
-Find End date:
+#Find End date:
 openssl x509 -enddate -noout -in file.pem
-Validate cert with secret key:
+#Validate cert with secret key:
 openssl rsa -in file.pem
-Validate cert with end point:
+#Validate cert with end point:
 nmap --script ssl-cert fdatafeed-ccwebint-e2e.platform.intuit.net -p 443
+##get metadata (DNS name, SAN and expiration)
+openssl x509 -text -noout -in file.pem
+         
 ```
 
 
