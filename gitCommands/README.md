@@ -36,6 +36,9 @@
 `git fetch master` # pulls the meta data but doesn't download actual contents. It is to check if there is any latest changes in master.
 `git pull orgin master` # pulls the latest content from the remote repo.
 
+#Delete remote and local branch
+`git branch -D <branchname>`
+`git push origin --delete <branchname>`
 
 #Rebase: How to remove multiple commits and combine to single commits
 ```
