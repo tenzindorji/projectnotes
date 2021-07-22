@@ -63,7 +63,7 @@ WantedBy=multi-user.target
 `systemctl start/status/stop zookeeper.service`\
 `systemctl start/status/stop kafka.service`\
 `systemctl start/status/stop <app_name>.service`
-4. To test auto start, need to reboot the server\
+4. To test auto start, need to reboot the server
 5. Useful troubleshooting commands\
 `systemctl cat <app_name>.service` view the config\
 `systemctl list-dependencies <app_name>.service` list the dependency tree\
