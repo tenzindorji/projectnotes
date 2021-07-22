@@ -57,17 +57,17 @@ ExecStart=/bin/sh <app_folder>/bin/app-start.sh
 WantedBy=multi-user.target
 ```
 2. reload daemon and enable the service
-`systemctl daemon-reload`
+`systemctl daemon-reload`\
 `systemctl enable <app_name>.service` Need to enable for all the services created above
 3. Try out by running the systemctl command
-`systemctl start/status/stop zookeeper.service`
-`systemctl start/status/stop kafka.service`
+`systemctl start/status/stop zookeeper.service`\
+`systemctl start/status/stop kafka.service`\
 `systemctl start/status/stop <app_name>.service`
 4. To test auto start, need to reboot the server
 5. Useful troubleshooting commands
-`systemctl cat <app_name>.service #view the config
-systemctl list-dependencies <app_name>.service` list the dependency tree
-`systemctl show <app_name>.service`list all the default settings for systemd
-`systemctl disable <app_name>.service`disable auto start during reboot
-`journalctl -ex`view the logs for systemd
+`systemctl cat <app_name>.service` #view the config\
+`systemctl list-dependencies <app_name>.service` list the dependency tree\
+`systemctl show <app_name>.service` list all the default settings for systemd\
+`systemctl disable <app_name>.service`disable auto start during reboot\
+`journalctl -ex`view the logs for systemd\
 `journalctl -u <app_name>.service` view the log only for service name
