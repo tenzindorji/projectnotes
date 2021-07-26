@@ -53,3 +53,8 @@ git push origin --delete <branchname>
 git log # should see only one commit
 git push origin yourbranch --force
 ```
+## Create branch from remove branch and push to remote repo
+```
+git checkout -b <new_branch> origin/<remote_branch>
+git push -u origin HEAD
+```
