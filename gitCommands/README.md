@@ -5,12 +5,12 @@
   - After resolving code conflicts by deleting the conflicting code from git UI, need to merge the commits
   - and Merge the pull request to master
 
-#Git cherry-pick
-## when do use it?
-  - `man git-cherry-pick` \n
-  - used for hotfix and when there is multiple branch and team. \n
-  - some time it will cause the merge conflict. \n
-  - command \n
+# Git cherry-pick
+- when to use it?
+  - `man git-cherry-pick`
+  - used for hotfix and when there is multiple branch and team.
+  - some time it will cause the merge conflict.
+  - command:
   `git cherry-pick <sha1 git log>`
 
 # fetch/pull/checkout/merge/rebase
@@ -23,12 +23,12 @@
 - `git fetch `
 
 ## merge feature branch to master
-`git checkout master`
+`git checkout master`\
 `git merge --squash feature`\
 `git commit -m "feature and master merged"`
 
 ## rebase command - merge feature branch to master and put feature commits as a latest commits.
-`git checkout master`
+`git checkout master`\
 `git rebase feature`\
 `git log`
 
