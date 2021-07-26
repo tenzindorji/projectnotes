@@ -22,27 +22,27 @@
 
 - `git fetch `
 
-#merge feature branch to master
+## merge feature branch to master
 `git checkout master`
-`git merge --squash feature`
+`git merge --squash feature`\
 `git commit -m "feature and master merged"`
 
-#rebase command - merge feature branch to master and put feature commits as a latest commits.
+## rebase command - merge feature branch to master and put feature commits as a latest commits.
 `git checkout master`
-`git rebase feature`
+`git rebase feature`\
 `git log`
 
-#fetch/pull
-`git fetch master` # pulls the meta data but doesn't download actual contents. It is to check if there is any latest changes in master.
+## fetch/pull
+`git fetch master` # pulls the meta data but doesn't download actual contents. It is to check if there is any latest changes in master.\
 `git pull orgin master` # pulls the latest content from the remote repo.
 
-#Delete remote and local branch\n
+## Delete remote and local branch
 ```
 git branch -D <branchname>`
 git push origin --delete <branchname>
 ```
 
-#Rebase: How to remove multiple commits and combine to single commits
+## Rebase: How to remove multiple commits and combine to single commits
 ```
  git checkout master
  git pull
