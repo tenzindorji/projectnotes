@@ -14,7 +14,7 @@
   `git cherry-pick <sha1 git log>`
 
 # fetch/pull/checkout/merge/rebase
-- `git checkout master` # change to master branch `git checkout feature` #change to feature branch
+- `git checkout master` # change to master branch `git checkout feature` #change to feature branch\
 - `git checkout master` # swtich to master branch and get the latest update by using pull
 - `git pull` # pull latest update
 - `git checkout yourbranch` # switch to your branch created on Git UI.
