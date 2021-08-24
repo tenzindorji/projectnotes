@@ -756,3 +756,10 @@ xvdg    202:96   0   8G  0 disk
   drwx------ 2 root root 16384 Jun  1 22:54 lost+found
   -rw-r--r-- 1 root root     0 Jun  1 22:56 file
 ```
+
+# Garbage collection and heap memory issue
+Sometime, some running java process takes lot of memory and not sure what is really causing it\
+Real situation: \
+  some java service have lot of integration like monitoring tool, appdynamics and appd might be the cuase of if it is not configure properly\
+Here is the command to dump gc collection from live java process
+`jmap -dump:live,format=b,file=/tmp/gc.hprof <pid>`
