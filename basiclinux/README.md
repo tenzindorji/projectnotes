@@ -761,5 +761,5 @@ xvdg    202:96   0   8G  0 disk
 Sometime, some running java process takes lot of memory and not sure what is really causing it\
 Real situation: \
   some java service have lot of integration like monitoring tool, appdynamics and appd might be the cuase of if it is not configure properly\
-Here is the command to dump gc collection from live java process
+Here is the command to dump gc collection from live java process\
 `jmap -dump:live,format=b,file=/tmp/gc.hprof <pid>`
