@@ -1,7 +1,10 @@
 
 Tell me about your experience:
 
-Current role: Devops Engineer at spectrum (Platform engineering team) for ecommerce buyflow. 
+Hi, My name is Tenzin Dorji, 
+
+Current role:
+Devops Engineer at spectrum (Platform engineering team) for ecommerce buyflow. 
 - I am role is to automate infrastucture as a code, I use puppet to achieve this goal 
 - Also, automate the deployment process for microservices 
 - Design and implement highly reliavable resislant infrastucture 
@@ -25,10 +28,9 @@ Before that, I was in New Jersy working for Merck Pharmacutical for almost 8 yea
 - Also, perform deployment, setup monitoring, maintain infrastructure, upgrade, patching, security fixes, enhancement, creating automations. 
 
 
-Lastly 
+Lastly,
+I did my graduation in Electronics and Communications from  India. I started my career in Accenture India in the year 2012
 I love photography, like to travel a lot and also like to cook.  I loved to play Tennis and Ping Pong.
-
-
 
 ---------------
 My name is Tenzin Dorji, I am from Bhutan. I did my graduation in Electronics and Communications from  India.
