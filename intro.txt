@@ -1,6 +1,36 @@
 
 Tell me about your experience:
 
+Current role: Devops Engineer at spectrum (Platform engineering team) for ecommerce buyflow. 
+- I am role is to automate infrastucture as a code, I use puppet to achieve this goal 
+- Also, automate the deployment process for microservices 
+- Design and implement highly reliavable resislant infrastucture 
+
+- The tools and technologies I am using right now are, puppet, Jenkins, haproxy, springboot framework, elastic search , kafka and zookeeper, Appdynamics and splunk for monitory.
+- Most of user infrastucture are Linux redhat servers.
+- scripting languages I am using is bash and python
+
+Its be exactly one year I joined spectrum organization. I am in St Louis Missori 
+
+Before spectrum, I was working as site reliability engineer for Intuit in Bay area in California.
+I was working for financial data platform, it is an infrastructure layer between Intuit products like turbo tax, mint, quick-books and Financial institutions.
+- My was to perform deployment, setup monitoring, maintain infrastructure, upgrade, patching, security fixes, enhancement, creating automations, and also migration.
+- The tools and technologies I used AWS cloud, chef, spinnaker and ArgoCD for deployment, Kubernetes, Docker,
+- Bash and python was the scripting langauge I used.
+
+Before that, I was in New Jersy working for Merck Pharmacutical for almost 8 years. 
+- I was leading the weboperation team.
+- My role was to design and deploy high reliable web insfructure to java applications in apache and tomcat. 
+- Migrate legacy infracture to Pivotal cloud foundry hosted in AWS cloud 
+- Also, perform deployment, setup monitoring, maintain infrastructure, upgrade, patching, security fixes, enhancement, creating automations. 
+
+
+Lastly 
+I love photography, like to travel a lot and also like to cook.  I loved to play Tennis and Ping Pong.
+
+
+
+---------------
 My name is Tenzin Dorji, I am from Bhutan. I did my graduation in Electronics and Communications from  India.
 I started my career in Accenture India in the year 2012 and worked there for 4 years. In 2015,
 I got opportunity to move to New Jersey to work from client location Merck(Pharma Company).
@@ -45,13 +75,6 @@ We have oncall on rotation bases and I have been oncall many times.
 
 
 Lastly, I am a good team player and loved to learn new things.
-
-
-
-
-
-
-
 
 I love photography, like to travel a lot and also like to cook.  I loved to play Tennis and Ping Pong.
 
