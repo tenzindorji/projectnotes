@@ -79,10 +79,37 @@
 - Deployment
   - Pods cannot be launched on a cluster directly; instead they are managed by one or more layer of abstraction call\
     the deployment.
+    ```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: hello
+      tier: backend
+      track: stable
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: hello
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: hello
+          image: "gcr.io/google-samples/hello-go-gke:1.0"
+          ports:
+            - name: http
+              containerPort: 80
+ ```
 - ingress
   - ingress allows access to kubernetes service from outside cluster
   - It can be done through ingress controller or LB
   - It can provide LB, SSL termination and name-based virtual hosting.
+  - is an API object that provides routing rules to manage external users' access to the services in a Kubernetes cluster
 
 # Other components:
 1. Replication controller
@@ -105,6 +132,21 @@
 10. service
     - It is a abstraction on  top of pods which provides a single  IP address and DNS name by which \
       the pods can be accessed
+    - A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. Services enable a loose coupling between dependent Pods. 
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello
+spec:
+  selector:
+    app: hello
+    tier: backend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: http
+ ```
 
 
 ## Inteview Questions:
@@ -192,3 +234,20 @@
 15. How do you drain traffic for maintenance
   - `kubectl drain <nodename>`
   - `kubectl uncordon <nodename>` # put the node back to rotation
+
+# ConfigMaps
+A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
+
+# Deployment types
+1. Recreate deployment 
+- used in dev environment, running container is terminated and created with new contianer 
+2. Rolling update
+- deploy new version of app, and terminate one version
+- Deployment with new replicaSet is launched and replicaSet of old version is terminated. Eventually all the old version is terminated
+3. Blue/green deployment
+- Rapid transition from old version to new version, making sure new version works 100%.
+- Green version is deployed with existing blue version.
+- Once testing is completed, DNS is switched to new version.
+4. Cannary deployment
+- A smaller group of user are routed to new version of an application, once testing is error free, replicas of new version is scaled up and thus old version is replicaed in an orderly manner
+
