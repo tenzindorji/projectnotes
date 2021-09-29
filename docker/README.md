@@ -146,6 +146,9 @@ ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
   `docker push tenzin/my-custom-app` #push to docker hub registry  
 
 ## CMD VS ENTRYPOINT
+- CMD - default command to be executed when running the contianer in the docker file 
+- CMD - it can be overwritten by providing commands during docker run.
+- ENTRYPOINT  - allows you to run executable files and it is not ignored when command is provided during docker run
 
 # Networking in docker
 ## Docker create three network automatically
