@@ -763,3 +763,5 @@ Real situation: \
   some java service have lot of integration like monitoring tool, appdynamics and appd might be the cuase of if it is not configure properly\
 Here is the command to dump gc collection from live java process\
 `jmap -dump:live,format=b,file=/tmp/gc.hprof <pid>`
+
+# Difference between paging and swapping
