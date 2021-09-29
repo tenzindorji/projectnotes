@@ -57,3 +57,7 @@ git push origin yourbranch --force
 git checkout -b <new_branch> origin/<remote_branch>
 git push -u origin HEAD
 ```
+## Tagging 
+`git tag` # list the tags\
+`git tag -l "v1.8.5*"` # search tag\
+`git tag -a v1.4 -m "my version 1.4"` #creating tagging and annotating 
