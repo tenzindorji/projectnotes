@@ -37,8 +37,8 @@
 
 ## Delete remote and local branch
 ```
-git branch -D <branchname>`
-git push origin --delete <branchname>
+git branch -D <branchname>` # local\
+git push origin --delete <branchname> #remote
 ```
 
 ## Rebase: How to remove multiple commits and combine to single commits
