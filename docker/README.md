@@ -1,4 +1,19 @@
 # Docker lesson
+**Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.\
+- Namespace Types:
+    1. Process ID
+    2. Mount
+    3. IPC (Interprocess communication)
+    4. User (currently experimental support for)
+    5. Network
+    
+**Cgroups** provide resource limitation and reporting capability within the container space. They allow granular control over what host resources are allocated to the containers and when they are allocated.\
+ - Common control groups
+    1. CPU
+    2. Memory
+    3. Network Bandwidth
+    4. Disk
+    5. Priority
 ## Docker commands
   - practice lab: https://kodekloud.com/p/docker-labs
 
