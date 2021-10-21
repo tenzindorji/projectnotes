@@ -611,7 +611,7 @@ openssl x509 -enddate -noout -in file.pem
 #Validate cert with secret key:
 openssl rsa -in file.pem
 #Validate cert with end point:
-nmap --script ssl-cert fdatafeed-ccwebint-e2e.platform.intuit.net -p 443
+echo | openssl s_client -servername uat-epccss.example.com -connect uat-epccss.example.com:443 2>/dev/null | openssl x509 -noout -dates
 ##get metadata (DNS name, SAN and expiration)
 openssl x509 -text -noout -in file.pem
          
