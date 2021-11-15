@@ -45,7 +45,7 @@
   - Used for managing container like kubernetes
 
 # Docker Swarm VS Kubernetes
-||Docker Swarm|Kubernetes|
+||DockerSwarm|Kubernetes|
 |---|---|---|
 |Scaling|No Auto Scaling| Auto Scaling|
 |Load Balancing| Auto LB| Manually configures LB|
