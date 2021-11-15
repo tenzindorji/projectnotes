@@ -79,7 +79,7 @@
 - Deployment
   - Pods cannot be launched on a cluster directly; instead they are managed by one or more layer of abstraction call\
     the deployment.
-    ```
+```
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -146,7 +146,7 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: http
-
+```
 # Inteview Questions:
 1. Why Kubernetes is widely used?
   - Kubernetes is an open source platform for automatic deployment and management of containers
@@ -251,28 +251,20 @@ A ConfigMap is an API object used to store non-confidential data in key-value pa
 
 
 # Firewall validation from Kubernetes cluster
-```
-authenticate using pks: 
-./pks.exe get-kubeconfig cdp-dev-oobs-sit -u tdorji@example.COM -a cexample.com -k
+1. Authenticate using pks: 
+`./pks.exe get-kubeconfig cdp-dev-oobs-sit -u tdorji@example.COM -a example.com -k`
 
-2. ssh to one of the running container: 
-./kubectl.exe exec -it debug -n oobs-sali-sit -- /bin/sh 
+2. Login to container: 
+- ssh to one of the running container: 
+  `./kubectl.exe exec -it debug -n oobs-sali-sit -- /bin/sh `
 
-Or
+- OR create new container: 
+`./kubectl.exe run firewall-test --image=brix4dayz/swiss-army-knife --restart=Never -n namespace-dev`\
+`./kubectl.exe exec -it firewall-test -n oobs-sali-sit -- /bin/sh`
 
-create new container: 
-
-./kubectl.exe run firewall-test --image=brix4dayz/swiss-army-knife --restart=Never -n oobs-sali-dev
-
-./kubectl.exe exec -it firewall-test -n oobs-sali-sit -- /bin/sh 
-
-
-
-OR – this should work if none of the above two are not working
-
-./kubectl.exe run -i -t --rm --image=brix4dayz/swiss-army-knife --restart=Never firewall-test -n namespace-dev
+- OR, this should work if none of the above two are not working
+`./kubectl.exe run -i -t --rm --image=brix4dayz/swiss-army-knife --restart=Never firewall-test -n namespace-dev`
 
 3. using nc command to validate the firewall rules
+`nc -vz -w 2 111.111.111.111 443`
 
-nc -vz -w 2 111.111.111.111 443
-```
