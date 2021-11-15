@@ -146,10 +146,8 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: http
- ```
 
-
-## Inteview Questions:
+# Inteview Questions:
 1. Why Kubernetes is widely used?
   - Kubernetes is an open source platform for automatic deployment and management of containers
     - Deployment
@@ -250,6 +248,7 @@ A ConfigMap is an API object used to store non-confidential data in key-value pa
 - Once testing is completed, DNS is switched to new version.
 4. Cannary deployment
 - A smaller group of user are routed to new version of an application, once testing is error free, replicas of new version is scaled up and thus old version is replicaed in an orderly manner
+
 
 # Firewall validation from Kubernetes cluster
 ```
