@@ -251,3 +251,29 @@ A ConfigMap is an API object used to store non-confidential data in key-value pa
 4. Cannary deployment
 - A smaller group of user are routed to new version of an application, once testing is error free, replicas of new version is scaled up and thus old version is replicaed in an orderly manner
 
+# Firewall validation from Kubernetes cluster
+```
+authenticate using pks: 
+./pks.exe get-kubeconfig cdp-dev-oobs-sit -u tdorji@example.COM -a cexample.com -k
+
+2. ssh to one of the running container: 
+./kubectl.exe exec -it debug -n oobs-sali-sit -- /bin/sh 
+
+Or
+
+create new container: 
+
+./kubectl.exe run firewall-test --image=brix4dayz/swiss-army-knife --restart=Never -n oobs-sali-dev
+
+./kubectl.exe exec -it firewall-test -n oobs-sali-sit -- /bin/sh 
+
+
+
+OR – this should work if none of the above two are not working
+
+./kubectl.exe run -i -t --rm --image=brix4dayz/swiss-army-knife --restart=Never firewall-test -n namespace-dev
+
+3. using nc command to validate the firewall rules
+
+nc -vz -w 2 111.111.111.111 443
+```
