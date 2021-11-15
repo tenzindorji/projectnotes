@@ -224,14 +224,13 @@ spec:
   - A liveness probe always checks if an application in a pod is running,\
     If the check fails, the container will get restarted
   - readiness probe
-  - Three types of probe\
-    1. http \
-
-    2. command \
+  - Three types of probe
+    1. http
+    2. command
     3. tcp
 
-15. How do you drain traffic for maintenance
-  - `kubectl drain <nodename>`
+15. How do you drain traffic for maintenance\
+  - `kubectl drain <nodename>`\
   - `kubectl uncordon <nodename>` # put the node back to rotation
 
 # ConfigMaps
