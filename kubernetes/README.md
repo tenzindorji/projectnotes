@@ -157,7 +157,7 @@ spec:
     - support multi platform
     - Huge community support
 2. What is difference between docker and kubernetes\
-|Features|Kubernetes|Docker|
+||Features|Kubernetes|Docker|
 |---|---|---|
 |Deployment|Applications are deployed as a combination of pods, deployment, and services|Applications are deployed in a form of services|
 |Autoscaling|Available|Not Available|
