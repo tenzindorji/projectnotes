@@ -8,9 +8,9 @@
 `usermod`: modify a user account.\
 `chage`: change user password expiry information.\
 `sudo`: run one or more commands as another user (typically with superuser permissions).\
-## unlock locked account
-`pam_tally2 --user <user>`
-`pam_tally2 --user <user> --reset`
+unlock locked account\
+`pam_tally2 --user <user>`\
+`pam_tally2 --user <user> --reset`\
 
 Relevant files: `/etc/passwd` (user information), `/etc/shadow` (encrypted passwords), `/etc/group` (group information) and `/etc/sudoers` (configuration for sudo).\
 
