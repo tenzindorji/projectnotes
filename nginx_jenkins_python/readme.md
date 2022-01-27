@@ -114,8 +114,8 @@ server {
 }
 ```
 
-Create a symlink for uptime and jenkins under `/etc/nginx/sites-enabled`
- `uptime -> /etc/nginx/sites-available/uptime`
+Create a symlink for uptime and jenkins under `/etc/nginx/sites-enabled`\
+ `uptime -> /etc/nginx/sites-available/uptime`\
  `jenkins -> /etc/nginx/sites-available/jenkins`
  
  Restart nginx `systemctl restart nginx`
