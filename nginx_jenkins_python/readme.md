@@ -13,6 +13,11 @@ This repository contains a small Python web application that shows the uptime of
 
 ## setup jenkins
 
+Debian OS: 
+open file /etc/default/jenkins
+
+
+
 ## configure jenkins behind nginx
 ```
 upstream uptime {
