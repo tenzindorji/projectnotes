@@ -21,6 +21,7 @@ Add `--prefix=/jenkins` as shown below. This change will open jenkins as /jenkin
 `JENKINS_ARGS="--prefix=/jenkins --webroot=/var/cache/$NAME/war --httpPort=$HTTP_PORT"`
 
 ## configure jenkins behind nginx
+create a file name uptime under `/etc/nginx/sites-available`
 ```
 upstream uptime {
         server localhost:4567;
@@ -65,6 +66,7 @@ server {
 }
 ```
 
+Create a file name jenkins under `/etc/nginx/sites-available`
 ```
 upstream jenkins {
   keepalive 32; # keepalive connections
@@ -111,6 +113,12 @@ server {
 
 }
 ```
+
+Create a symlink for uptime and jenkins under `/etc/nginx/sites-enabled`
+ `uptime -> /etc/nginx/sites-available/uptime`
+ `jenkins -> /etc/nginx/sites-available/jenkins`
+ 
+ Restart nginx `systemctl restart nginx`
 
 ## configure python app behind nginx
 
