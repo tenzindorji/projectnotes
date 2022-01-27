@@ -14,6 +14,10 @@
     3. Network Bandwidth
     4. Disk
     5. Priority
+
+## Install docker on debian box 
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-debian-10
+
 ## Docker commands
   - practice lab: https://kodekloud.com/p/docker-labs
 
