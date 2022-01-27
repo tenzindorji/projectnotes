@@ -83,6 +83,9 @@ example:
  `jenkins -> /etc/nginx/sites-available/jenkins`
  
  Restart nginx `systemctl restart nginx`
+ 
+## run python app in backgroup
+`python3 /var/www/uptime/serve.py &> /var/log/nginx/websites.log &`
 
 ## create jenkins pipeline
 
