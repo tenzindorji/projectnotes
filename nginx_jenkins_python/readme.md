@@ -20,74 +20,33 @@ Add `--prefix=/jenkins` as shown below. This change will open jenkins as /jenkin
 
 `JENKINS_ARGS="--prefix=/jenkins --webroot=/var/cache/$NAME/war --httpPort=$HTTP_PORT"`
 
-## configure jenkins behind nginx
-create a file name uptime under `/etc/nginx/sites-available`
+## configure jenkins and python app behind nginx
+create a file name uptime under `/etc/nginx/conf.d/backends.conf` . You can create any name with extension .conf
 ```
+upstream jenkins {
+  keepalive 32; # keepalive connections
+  server localhost:8081;
+}
+
 upstream uptime {
-        server localhost:4567;
+        server localhost:4567 fail_timeout=0;
 }
 
 server {
         listen 80 default_server;
-        server_name 3.138.203.88;
-        #error_log /var/log/nginx/update.error.log;
-        #root /var/www/uptime;
-        #index index.html;
-#       location /uptime/ {
-#               #include /etc/nginx/proxy_params;
-#               proxy_pass http://uptime;
-#       }
-#}
-  # pass through headers from Jenkins that Nginx considers invalid
-  ignore_invalid_headers off;
 
   location /uptime/ {
       proxy_pass         http://uptime;
-      rewrite ^/uptime(.*) /$1 break;
-      #proxy_redirect     default;
+      proxy_redirect     off;
       proxy_http_version 1.1;
-
-      proxy_set_header   Connection "";
-
-      proxy_set_header   Host              $host;
-      proxy_set_header   X-Real-IP         $remote_addr;
+      proxy_set_header   Host              $http_host;
       proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
-      proxy_set_header   X-Forwarded-Proto $scheme;
-      proxy_max_temp_file_size 0;
-
-
-      proxy_connect_timeout      90;
-      proxy_send_timeout         90;
-      proxy_read_timeout         90;
-      proxy_buffering            off;
-      proxy_request_buffering    off; # Required for HTTP CLI commands
   }
-
-}
-```
-
-Create a file name jenkins under `/etc/nginx/sites-available`
-```
-upstream jenkins {
-  keepalive 32; # keepalive connections
-  server localhost:8081; # jenkins ip and port
-}
-
-
-server {
-  listen          80;       # Listen on port 80 for IPv4 requests
-
-  server_name     3.138.203.88;  # replace 'jenkins.example.com' with your server domain name
-
-
-  access_log      /var/log/nginx/jenkins.access.log;
-  error_log       /var/log/nginx/jenkins.error.log;
 
   # pass through headers from Jenkins that Nginx considers invalid
   ignore_invalid_headers off;
 
-
-  location / {
+  location /jenkins/ {
       proxy_pass         http://jenkins;
       proxy_redirect     off;
       proxy_http_version 1.1;
@@ -114,13 +73,16 @@ server {
 }
 ```
 
-Create a symlink for uptime and jenkins under `/etc/nginx/sites-enabled`\
+Restart nginx `systemctl restart nginx`
+
+Also, if there are multiples websites or applications, it will be easy to manage using separate vhost./
+You can multiple vhost under `/etc/nginx/sites-available` folder and Create a symlink under `/etc/nginx/sites-enabled` 
+
+example: 
  `uptime -> /etc/nginx/sites-available/uptime`\
  `jenkins -> /etc/nginx/sites-available/jenkins`
  
  Restart nginx `systemctl restart nginx`
-
-## configure python app behind nginx
 
 ## create jenkins pipeline
 
