@@ -163,6 +163,7 @@ CMD sh /var/www/website/start.sh
 ```
 
 - Create this start up script call start.sh 
+
 ```
 #! /bin/bash
 
@@ -179,10 +180,11 @@ python3 /var/www/website/serve.py
 └── start.sh
 ```
 
-- Build Docker image
+- Build Docker image using Dockerfile
 `docker build -t mywebsite .`
+
 - Start the docker container 
-`docker image` # list the image ID created above
-`docker run -d <image_id> # run container in backgroud
-`docker ps` # list running container 
+`docker image` # list the image ID created above\
+`docker run -d <image_id> # run container in backgroud\
+`docker ps` # list running container \
 `docker exect -it <container_id> bash` # ssh to running container
