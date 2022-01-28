@@ -125,7 +125,7 @@ pipeline {
 ```
 
 ## dockerize the setup 
-- Create this dockerfile call Dockerfile
+- Create this dockerfile call Dockerfile\
 ```
 FROM debian
 
@@ -162,16 +162,14 @@ EXPOSE 80
 CMD sh /var/www/website/start.sh
 ```
 
-- Create this start up script call start.sh 
-
+- Create this start up script call start.sh \
 ```
 #! /bin/bash
 
 service nginx start
 python3 /var/www/website/serve.py
 ```
-- Files that are going to get copy to image should be kept under same local as Dockerfile 
-
+- Files that are going to get copy to image should be kept under same local as Dockerfile \
 ```
 ├── Dockerfile
 ├── backends.conf
@@ -180,7 +178,7 @@ python3 /var/www/website/serve.py
 └── start.sh
 ```
 
-- Build Docker image using Dockerfile
+- Build Docker image using Dockerfile\
 `docker build -t mywebsite .`
 
 - Start the docker container \
