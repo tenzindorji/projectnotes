@@ -89,4 +89,64 @@ example:
 
 ## create jenkins pipeline
 
-## dockerize the setup
+## dockerize the setup 
+- Create this dockerfile call Dockerfile
+```
+FROM debian
+
+MAINTAINER Rubod
+
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install net-tools nginx python3-pip procps
+
+#RUN pip install http
+
+
+RUN rm -rf /etc/nginx/conf.d/*
+RUN rm -rf /etc/nginx/sites-enabled/default
+
+
+RUN mkdir -p /var/www/website/
+
+COPY backends.conf /etc/nginx/conf.d/
+COPY index.html /var/www/website/
+COPY serve.py /var/www/website/
+COPY start.sh /var/www/website/
+
+RUN chmod +x /var/www/website/start.sh
+
+
+EXPOSE 80
+
+#RUN service nginx start
+#CMD /usr/sbin/nginx && tail -f /dev/null
+#WORKDIR /var/www/website
+#CMD ["python3", "serve.py"]
+#CMD ["nginx", "-g", "daemon off;"]
+CMD sh /var/www/website/start.sh
+```
+
+- Create this start up script call start.sh 
+```
+#! /bin/bash
+
+service nginx start
+python3 /var/www/website/serve.py
+```
+
+- Files that are going to get copy to image should be kept under same local as Dockerfile 
+
+├── Dockerfile
+├── backends.conf
+├── index.html
+├── serve.py
+└── start.sh
+
+- Build Docker image
+`docker build -t mywebsite .`
+- Start the docker container 
+`docker image` # list the image ID created above
+`docker run -d <image_id> # run container in backgroud
+`docker ps` # list running container 
+`docker exect -it <container_id> bash` # ssh to running container
