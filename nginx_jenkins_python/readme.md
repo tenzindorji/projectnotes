@@ -88,6 +88,40 @@ example:
 `python3 /var/www/uptime/serve.py &> /var/log/nginx/websites.log &`
 
 ## create jenkins pipeline
+serve.py script as unix test function 
+`python3 serve.py test` #This will run unit test 
+
+Declarative piple: 
+```
+// Declarative //
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Build completed'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'python3 /var/www/uptime/serve.py test'
+                //echo 'Test completed'//
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'deploy completed'
+            }
+        }
+    }
+    post { 
+        always { 
+            echo 'Yay!'
+        }
+    }
+}
+// Script //
+```
 
 ## dockerize the setup 
 - Create this dockerfile call Dockerfile
