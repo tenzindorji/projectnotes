@@ -9,6 +9,7 @@ This repository contains a small Python web application that shows the uptime of
  - Bonus: Create a Jenkins pipeline to run the unit test on git push to the repository (note: you will need to host this repository yourself)
  - Bonus: Dockerize the web app, what problem do you run into?
 
+## Solutions:
 ## setup nginx
 
 ## setup jenkins
