@@ -169,14 +169,15 @@ CMD sh /var/www/website/start.sh
 service nginx start
 python3 /var/www/website/serve.py
 ```
-
 - Files that are going to get copy to image should be kept under same local as Dockerfile 
 
+```
 ├── Dockerfile
 ├── backends.conf
 ├── index.html
 ├── serve.py
 └── start.sh
+```
 
 - Build Docker image
 `docker build -t mywebsite .`
