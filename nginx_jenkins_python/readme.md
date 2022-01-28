@@ -185,6 +185,6 @@ python3 /var/www/website/serve.py
 
 - Start the docker container \
 `docker image` # list the image ID created above \
-`docker run -d <image_id> # run container in backgroud \
+`docker run -d <image_id>` # run container in backgroud \
 `docker ps` # list running container \
 `docker exect -it <container_id> bash` # ssh to running container
