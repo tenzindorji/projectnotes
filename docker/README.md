@@ -163,11 +163,31 @@ ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
 - create the image by running below command
   `docker build Dockerfile -t tenzin/my-custom-app` #creates image locally on your system and tag it \
   `docker push tenzin/my-custom-app` #push to docker hub registry  
+  
+## RUN Command
+- Is executed during docker build to create image
+- CMD is executed when container is started. 
 
 ## CMD VS ENTRYPOINT
 - CMD - default command to be executed when running the contianer in the docker file 
 - CMD - it can be overwritten by providing commands during docker run.
 - ENTRYPOINT  - allows you to run executable files and it is not ignored when command is provided during docker run
+
+## What is ENTRYPOINT
+- Allows you to specify along with the parameters 
+- Syntax `ENTRYPOINT application "arg, arg1"
+- Example `ENTRYPOINT echo "Hello, $name"
+
+## ADD  
+- Copy file from host to docker image
+- `ADD /SRC/ /DES/`
+
+## ENV
+- Set up environment variables
+- change be overwrite during run time 
+
+## MAINTAINER 
+- `MAINTAINER niznetij@gmail.com`
 
 # Networking in docker
 ## Docker create three network automatically
