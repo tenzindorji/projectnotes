@@ -32,6 +32,8 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-o
   - remove container permanently\
     `docker rm <container_name>`\
     `docker container rm $(docker container ls -aq)` #remove all stopped container
+    `docker rm $(docker ps --filter status=exited -q)` # removed all stopped containers
+    
   - list images\
     `docker images`
   - remove images\
@@ -39,6 +41,8 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-o
     `docker rmi nginx:alpine`\
     `docker rmi nginx:latest` \
     `docker image prune` # remove unused dangling images
+    `docker image prune --all --force` # remove all images from local
+   
 
   - download images\
     `docker run nginx` #it download and run the container\
