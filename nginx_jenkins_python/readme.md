@@ -196,10 +196,10 @@ CMD ["python3", "serve.py"]
 - Build Docker image using Dockerfile\
 `docker build -t mywebsite .`
 
-- Start the docker container \
-`docker image` # list the image ID created above \
-`docker run -p <host_port>:<container_port> -d <image_id>` # run container in backgroud \
-Example for python app running on port 4567: `docker run -p 4567:4567 -d <image>`\ 
+- Start the docker container using image, and bind host and container ports `-p HOST_PORT:CONTAINER_PORT`\
+`docker image` # list the image ID
+`docker run -p <host_port>:<container_port> -d <image_id>` # run container in backgroud and bind to port\
+Example for python app running on port 4567: `docker run -p 4567:4567 -d <image>` \ 
 `docker ps` # list running container \
 `docker exect -it <container_id> bash` # ssh to running container
 
