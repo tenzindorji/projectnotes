@@ -124,7 +124,7 @@ pipeline {
 // Script //
 ```
 
-## dockerize the setup 
+## dockerize the setup (run nginx and python app in same container)
 - Create this dockerfile call Dockerfile\
 ```
 FROM debian
@@ -178,11 +178,29 @@ python3 /var/www/website/serve.py
 └── start.sh
 ```
 
+## Just create python website image
+Docker file
+```
+FROM python
+
+MAINTAINER Rubod
+COPY index.html .
+COPY serve.py .
+
+
+EXPOSE 4567
+
+CMD ["python3", "serve.py"]
+```
+
 - Build Docker image using Dockerfile\
 `docker build -t mywebsite .`
 
 - Start the docker container \
 `docker image` # list the image ID created above \
-`docker run -d <image_id>` # run container in backgroud \
+`docker run -p <host_port>:<container_port> -d <image_id>` # run container in backgroud \
+Example for python app running on port 4567: `docker run -p 4567:4567 -d <image>`\ 
 `docker ps` # list running container \
 `docker exect -it <container_id> bash` # ssh to running container
+
+
