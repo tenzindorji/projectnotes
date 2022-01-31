@@ -147,6 +147,29 @@ It redirects stdout and stderr to nohup.out
 uptime
 top
   ```
+  
+  
+- Kill hung Chef process:
+```
+sudo ps -ef|awk '/chef/ {print $2}'|xargs -n1 -I% bash -c "sudo kill -9 %"
+```
+
+- Remove New line from the file: This is very useful for storing secrets and passwords for automation
+```
+perl -p -i -e 's/\R//g;' filename
+```
+
+- Vlookup:
+```
+=iferror(VLOOKUP(A64,Sheet33!$A$1:$C$264,3,False),0)
+```
+```
+=VLOOKUP(B2,$A$2:$A$20,1,FALSE) 
+B2 is the value to find
+$A$2:$A$20 is the range to find the value 
+1, is the column number whever to value has been lookedup
+FALSE, extact match turned off 
+```
 
 # Virutal Memory
 # swap memory
@@ -669,20 +692,6 @@ aws --profile cfao-fdsqa --region us-west-2 iam list-server-certificates
 aws iam list-server-certificates
 ```
 
-Kill hung Chef process:
-```
-sudo ps -ef|awk '/chef/ {print $2}'|xargs -n1 -I% bash -c "sudo kill -9 %"
-```
-
-Remove New line from the file: This is very useful for storing secrets and passwords for automation
-```
-perl -p -i -e 's/\R//g;' filename
-```
-
-google Doc: Vlookup:
-```
-=iferror(VLOOKUP(A64,Sheet33!$A$1:$C$264,3,False),0)
-```
 
 ## Find the largest file in the dir
 `ls -lh ~/dir |sort -rh|head -1`
