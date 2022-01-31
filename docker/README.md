@@ -1,5 +1,5 @@
 # Docker lesson
-**Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.\
+**Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.
 - Namespace Types:
     1. Process ID
     2. Mount
@@ -31,7 +31,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-o
     `docker stop <container_name>`
   - remove container permanently\
     `docker rm <container_name>`\
-    `docker container rm $(docker container ls -aq)` #remove all stopped container
+    `docker container rm $(docker container ls -aq)` #remove all stopped container\
     `docker rm $(docker ps --filter status=exited -q)` # removed all stopped containers
     
   - list images\
@@ -40,7 +40,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-o
     `docker rmi <image_name>`\
     `docker rmi nginx:alpine`\
     `docker rmi nginx:latest` \
-    `docker image prune` # remove unused dangling images
+    `docker image prune` # remove unused dangling images\
     `docker image prune --all --force` # remove all images from local
    
 
@@ -233,6 +233,11 @@ ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
     - containers
     - image
     - volumes
+
+## What is docker host, docker container and docker swamp
+- Docker host is the VM where docker Engine is installed and containers run on it as a processes. 
+- Docker container is process running on Docker host created from any base image. 
+- Docker Swamp is group of containers 
 ## Docker layers architecture
 
 # Docker compose
