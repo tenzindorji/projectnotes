@@ -60,7 +60,7 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-o
     `docker pull nginx:1.14-alpine` #After : is the tag which is version of the app. \
     If you do not mention tag, docker takes default latest tag.
   - port mapping\
-    `docker run -p <host_port>:<container_port> -d <image_id>\ # run container in backgroud and bind to port\ 
+    `docker run -p <host_port>:<container_port> -d <image_id>` # run container in backgroud and bind to port\ 
     `docker run -p 80:5000 <container_name>`\
       - Container runs on docker host and every container is assigned with private IP which is not exposed to outside.\
       - Mapped docker host port to container port and use docker host IP to access the App.
