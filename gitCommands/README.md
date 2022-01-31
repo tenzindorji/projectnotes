@@ -67,3 +67,8 @@ git push -u origin HEAD
 `git tag` # list the tags\
 `git tag -l "v1.8.5*"` # search tag\
 `git tag -a v1.4 -m "my version 1.4"` #creating tagging and annotating 
+
+## Branch owner:
+`git for-each-ref --format='%(color:cyan)%(authordate:format:%m/%d/%Y %I:%M %p)    %(align:25,left)%(color:yellow)%(authorname)%(end) %(color:reset)%(refname:strip=3)' --sort=authordate refs/remotes`
+
+
