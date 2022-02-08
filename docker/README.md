@@ -1,5 +1,7 @@
 # Docker lesson
-**Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.
+**Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.\
+
+- Provide processes with their own view of system 
 - Namespace Types:
     1. Process ID
     2. Mount
@@ -8,12 +10,15 @@
     5. Network
     
 **Cgroups** (Control Groups) provide resource limitation and reporting capability within the container space. They allow granular control over what host resources are allocated to the containers and when they are allocated.\
+- Provides metering and limiting, Access control
  - Common control groups
     1. CPU
     2. Memory
     3. Network Bandwidth
     4. Disk
     5. Priority
+
+**In Short** Cgroup is limit how much you can use and Namespace is limit what you can see and therefor use it
 
 ## Install docker on debian box 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-debian-10
