@@ -7,7 +7,7 @@
     4. User (currently experimental support for)
     5. Network
     
-**Cgroups** provide resource limitation and reporting capability within the container space. They allow granular control over what host resources are allocated to the containers and when they are allocated.\
+**Cgroups** (Control Groups) provide resource limitation and reporting capability within the container space. They allow granular control over what host resources are allocated to the containers and when they are allocated.\
  - Common control groups
     1. CPU
     2. Memory
