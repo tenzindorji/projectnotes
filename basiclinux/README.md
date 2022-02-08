@@ -357,6 +357,9 @@ Process and thread:
 # NTP Server (Network time protocol)
 * ntpq -p # reachability statistics -
 
+# What is soft and hard limit 
+- soft limit are not enforced, they influence reclaim under memory pressure, Process using highest soft limit momery is terminated
+- Hard limit, when any process goes above memory hard limit, Out Of Memory, that process is killed
 # How can you limit process memory usage?
 `ulimit -sv`
 
