@@ -1,4 +1,7 @@
 # Docker lesson
+
+Containers are made up of three basic Linux which makes them separated from each other
+
 **Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.\
 
 - Provide processes with their own view of system 
@@ -9,16 +12,32 @@
     4. User (currently experimental support for)
     5. Network
     
-**Cgroups** (Control Groups) provide resource limitation and reporting capability within the container space. They allow granular control over what host resources are allocated to the containers and when they are allocated.\
+**Cgroups** (Control Groups) 
+- Is a Linux system used for tracking, grouping and organizing the processes that run. Every Processes is tracked with cgroup regardless of whether it is container or none
+- Cgroups are typicle used to associated processes with resources. 
 - Provides metering and limiting, Access control
- - Common control groups
-    1. CPU
-    2. Memory
-    3. Network Bandwidth
-    4. Disk
-    5. Priority
+- All the processes are controlled by cgroups
 
 **In Short** Cgroup is limit how much you can use and Namespace is limit what you can see and therefor use it
+
+**UNION FileSytem** 
+
+**Subsystem** 
+- Control groups system is an abstract framework
+- Way you interact with cgroups is through subsystem
+- Subsystem is a concrete implementations
+- Different subsystems can organize processes separately 
+- Most subsystem are resource controlled
+- Example of subsystems: 
+    - Memory
+    - CPU time
+    - Block I/O
+    - Number of Discrete processes(Pids)
+    - CPU and Memory pinning
+    - Freezer (Used by docker pause)
+    - Devices
+    - Network priority
+    - 
 
 ## Install docker on debian box 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-debian-10
