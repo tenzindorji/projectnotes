@@ -31,7 +31,7 @@ Containers are made up of three basic Linux which makes them separated from each
 - 
 ## **Cgroups** (Control Groups) 
 - Is a Linux system used for tracking, grouping and organizing the processes that run. Every Processes is tracked with cgroup regardless of whether it is container or none
-- Cgroups are typicle used to associated processes with resources. 
+- Cgroups are typically used to associate processes with resources. 
 - Provides metering and limiting, Access control
 - All the processes are controlled by cgroups
 
@@ -180,7 +180,7 @@ single / slash indicates most of the cgroups are in root directory
 - ls /sys/fs/cgroup/cpu/docker 
 
 
-**UNION FileSytem**
+## UNION FileSytem
 
 
 ## Install docker on debian box 
