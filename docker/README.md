@@ -2,7 +2,7 @@
 
 Containers are made up of three basic Linux which makes them separated from each other
 
-**Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.\
+**Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.
 
 - Provide processes with their own view of system 
 - Namespace Types:
@@ -37,7 +37,117 @@ Containers are made up of three basic Linux which makes them separated from each
     - Freezer (Used by docker pause)
     - Devices
     - Network priority
-    - 
+
+**Hierarchical Representation**
+- Independent subsystem hierarchies
+- Every PID is represented exactly once in each subsystem
+- New processes inherit cgroups from their parents
+- 
+**cgroup virtaul filesystem
+- Typically mounted at /sys/fs/cgroup
+- **Task** virtaul file holds all pids in the cgroup
+- other files have settings and utilization data
+
+**subsystem Example**
+ls /sys/fs/cgroup
+blkio    cpu,cpuacct  freezer  net_cls           perf_event
+cpu      cpuset       hugetlb  net_cls,net_prio  pids
+cpuacct  devices      memory   net_prio          systemd
+
+ls /sys/fs/cgroup/devices/
+cgroup.clone_children  cgroup.sane_behavior  devices.list       tasks
+cgroup.event_control   devices.allow         notify_on_release
+cgroup.procs           devices.deny          release_agent
+
+tree /sys/fs/cgroup/
+/sys/fs/cgroup/
+├── blkio (block io controller)
+.....
+└── systemd
+    ├── cgroup.clone_children
+    ├── cgroup.event_control
+    ├── cgroup.procs
+    ├── cgroup.sane_behavior
+    ├── notify_on_release
+    ├── release_agent
+    ├── system.slice
+    │   ├── appd_machine_agent.service
+    │   │   ├── cgroup.clone_children
+    │   │   ├── cgroup.event_control
+    │   │   ├── cgroup.procs
+    │   │   ├── notify_on_release
+    │   │   └── tasks
+    │   ├── appd_netviz_agent.service
+    │   │   ├── cgroup.clone_children
+    │   │   ├── cgroup.event_control
+    │   │   ├── cgroup.procs
+    │   │   ├── notify_on_release
+    │   │   └── tasks
+
+- These bunch of files are interfaces into the kernal data stracture for cgroups
+- To find find which cgroup an arbitary process ID assigned to, you can find from /proc file 
+- proc file system that contains directory that corresponds to each Process ID
+
+ls /proc
+1      1639   27541  330   364   545   816  875   9467         loadavg
+10     16796  2798   331   365   546   817  876   954          locks
+1000   16800  28     332   366   5682  818  877   956          mdstat
+1030   16801  28546  333   367   6     819  880   975          meminfo
+10415  16802  2870   334   368   60    820  881   980          misc
+10474  16935  29     335   369   61    821  882   982          modules
+1056   16937  30     336   37    62    822  883   988          mounts
+1077   16938  301    3364  370   628   823  884   989          mtrr
+1091   16939  3027   337   371   64    824  885   991          net
+10962  17     303    338   372   659   825  886   992          pagetypeinfo
+1097   1702   304    339   373   661   826  888   acpi         partitions
+11     1705   305    34    374   662   827  889   buddyinfo    sched_debug
+118    1717   306    340   38    67    828  890   bus          schedstat
+1185   17365  307    341   39    673   829  891   cgroups      scsi
+12     17792  309    342   4     7     830  892   cmdline      self
+1278   18     31     343   407   7696  831  893   consoles     slabinfo
+12996  18766  311    344   409   772   832  894   cpuinfo      softirqs
+13     19     312    345   4323  773   833  895   crypto       stat
+1324   1934   31330  346   469   774   834  897   devices      swaps
+1390   1941   314    347   49    775   835  898   diskstats    sys
+1393   2      315    348   50    776   836  899   dma          sysrq-trigger
+1396   20390  316    349   51    777   837  9     driver       sysvipc
+14     21     317    35    510   7777  841  900   execdomains  timer_list
+1400   2170   318    350   511   778   842  901   fb           timer_stats
+1402   22     319    351   52    779   843  902   filesystems  tty
+1404   2225   32     352   522   782   845  903   fs           uptime
+1405   23     320    353   523   783   846  904   interrupts   version
+1409   23386  321    355   535   784   847  907   iomem        vmallocinfo
+1410   24     322    356   536   786   850  912   ioports      vmstat
+1412   2422   323    357   537   7866  852  913   irq          zoneinfo
+1422   2506   324    358   538   788   854  914   kallsyms
+1427   2508   325    359   539   789   855  915   kcore
+1474   2543   326    36    540   8     870  916   keys
+1483   26     327    360   541   80    871  917   key-users
+1531   26578  328    361   542   813   872  918   kmsg
+16     26825  329    362   543   814   873  9188  kpagecount
+16056  2730   33     363   544   815   874  919   kpageflags
+
+
+- find shell process which is regular process 
+echo $$
+16939
+
+- Lets looks the cgroup of current shell process ID
+
+cat /proc/16939/cgroup
+11:memory:/
+10:devices:/
+9:pids:/
+8:cpuset:/
+7:cpuacct,cpu:/
+6:blkio:/
+5:net_prio,net_cls:/
+4:hugetlb:/
+3:perf_event:/
+2:freezer:/
+1:name=systemd:/user.slice/user-32394.slice/session-c6254.scope
+
+single / slash indicates most of the cgroups are in root directory
 
 ## Install docker on debian box 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-debian-10
