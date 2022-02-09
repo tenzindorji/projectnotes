@@ -22,13 +22,20 @@ Containers are made up of three basic Linux which makes them separated from each
  
 **Network Namespace** 
 - Frequently used in containers 
-- **veth** (virtual Ethernet) devices can connect different namespaces
+- **veth** (virtual Ethernet) devices can connect different namespaces. Docker uses separate network namespace per container and by default configures each container namespace, such as it has veth pair connected to Linux bridge to enable outbound connectivety. 
 - **docker run** uses a separate network namespace per container
 - Multiple containers can share a network namespace
     - kubernetes pods
     - Amazon ECS tasks with the awsvpc networking mode
-**Mount Namespace** 
+   
+**Mount Namespace**  One of the halmark of Linux Container is that they have a separate view of their filesystem with thier own set of files from their container image.
+- Used for giving containers their own filesystem
+- Container image is mounted as the root filesystem 
+- **Volumes** to share data between containers or the host
+
+**procfs virtual filesystem**
 - 
+
 ## **Cgroups** (Control Groups) 
 - Is a Linux system used for tracking, grouping and organizing the processes that run. Every Processes is tracked with cgroup regardless of whether it is container or none
 - Cgroups are typically used to associate processes with resources. 
