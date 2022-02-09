@@ -2,17 +2,34 @@
 
 Containers are made up of three basic Linux which makes them separated from each other
 
+## Namespace
 **Namespaces** are one of a feature in the Linux Kernel and fundamental aspect of containers on Linux. On the other hand, namespaces provide a layer of isolation. Docker uses namespaces of various kinds to provide the isolation that containers need in order to remain portable and refrain from affecting the remainder of the host system. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.
 
+- Isolation mechanism for resources
+- Changes to resources within namespace can be invisible outside the namespace
+- Resource mapping with permission changes
 - Provide processes with their own view of system 
-- Namespace Types:
-    1. Process ID
-    2. Mount
-    3. IPC (Interprocess communication)
-    4. User (currently experimental support for)
-    5. Network
-   
-**Cgroups** (Control Groups) 
+- 
+- What namespaces are available:
+    1. Processes(pid)
+    2. Filesystem(mounts)
+    3. IPC (Inter-process communication)
+    4. Hostname and domain name(uts)
+    5. User and group IDs
+    6. Network
+    7. cgroup
+ 
+ 
+**Network Namespace** 
+- Frequently used in containers 
+- **veth** (virtual Ethernet) devices can connect different namespaces
+- **docker run** uses a separate network namespace per container
+- Multiple containers can share a network namespace
+    - kubernetes pods
+    - Amazon ECS tasks with the awsvpc networking mode
+**Mount Namespace** 
+- 
+## **Cgroups** (Control Groups) 
 - Is a Linux system used for tracking, grouping and organizing the processes that run. Every Processes is tracked with cgroup regardless of whether it is container or none
 - Cgroups are typicle used to associated processes with resources. 
 - Provides metering and limiting, Access control
