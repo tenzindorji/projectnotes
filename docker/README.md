@@ -33,8 +33,123 @@ Containers are made up of three basic Linux which makes them separated from each
 - Container image is mounted as the root filesystem 
 - **Volumes** to share data between containers or the host
 
-**procfs virtual filesystem**
-- 
+```
+mount
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime,seclabel)
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+devtmpfs on /dev type devtmpfs (rw,nosuid,seclabel,size=8121108k,nr_inodes=2030277,mode=755)
+securityfs on /sys/kernel/security type securityfs (rw,nosuid,nodev,noexec,relatime)
+tmpfs on /dev/shm type tmpfs (rw,nosuid,nodev,seclabel)
+devpts on /dev/pts type devpts (rw,nosuid,noexec,relatime,seclabel,gid=5,mode=620,ptmxmode=000)
+tmpfs on /run type tmpfs (rw,nosuid,nodev,seclabel,mode=755)
+tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,seclabel,mode=755)
+cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
+pstore on /sys/fs/pstore type pstore (rw,nosuid,nodev,noexec,relatime)
+cgroup on /sys/fs/cgroup/blkio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,blkio)
+cgroup on /sys/fs/cgroup/memory type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,memory)
+cgroup on /sys/fs/cgroup/perf_event type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,perf_event)
+cgroup on /sys/fs/cgroup/hugetlb type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,hugetlb)
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuacct,cpu)
+cgroup on /sys/fs/cgroup/freezer type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,freezer)
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,net_prio,net_cls)
+cgroup on /sys/fs/cgroup/devices type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,devices)
+cgroup on /sys/fs/cgroup/cpuset type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,cpuset)
+cgroup on /sys/fs/cgroup/pids type cgroup (rw,nosuid,nodev,noexec,relatime,seclabel,pids)
+configfs on /sys/kernel/config type configfs (rw,relatime)
+/dev/mapper/vg_root-lv_root on / type xfs (rw,relatime,seclabel,attr2,inode64,noquota)
+selinuxfs on /sys/fs/selinux type selinuxfs (rw,relatime)
+systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=34,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=12868)
+```
+
+**procfs virtual filesystem** Is the machenism that the linux kernal exposes for introinspection of its data
+- This file system includes lots of information about each process that is running 
+- One of the piece of information that is available is the namespace to which process belong
+- Inside the process directory is the directory call **ns** . This directory contains symbolic links to the namespace, however they are not quite regular symbolic link 
+- The link contains the namespace type and inode number to identify the namespace 
+```
+readlink /proc/$$/ns/*
+ipc:[4026531839]
+mnt:[4026531840]
+net:[4026531956]
+pid:[4026531836]
+user:[4026531837]
+uts:[4026531838]
+```
+
+**Creating namespaces**
+- clone(2) and unshare(2) - these are sys call
+    - clone(2) is for new processes to create new namespaces 
+    - unshare(2) is for existing processes to create new namespaces
+- CLONE_NEW* flags to specify which namespaces 
+
+**Namespace cannot be empty**
+- The kernel automatically garbage-collects namespaces be referenc-counting 
+- New namespace remains open by two means 
+    - a process is open
+    - a mount is open
+- Bind-mount a file in /proc/$$/ns to another place on the filesystem 
+
+```
+mount \
+--bind /proc/$$/ns/net \
+/var/run/netns/lfnw
+```
+**Entering Namespace**
+- Open a file from /proc/$$/ns (or a bing-mount)
+- Pass to **setns(2)** to enter the existing namespace
+- Namespace remains open as long as the process is running, even if the original file goes away
+
+- **nsenter(1)** is a command for doing this interactively
+- **ip-netns(8)** works specifically for network namespaces
+
+**Network namespace example**
+```
+ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
+2: ens192: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 00:50:56:bc:bd:ed brd ff:ff:ff:ff:ff:ff
+```
+- LO interface is used for localhost
+**Create new network namespace**
+```
+ sudo unshare --net ip link
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```
+- We can different output compare to previous one, instead of two interface, we only see one that lo, and actually is different lo since this is inside the new network namespace
+- Namespace goes away if nothing holds them open 
+- Since this command just ran ip program, it exited and namespace is gone
+
+**Open shell with new namespace**
+```
+sudo unshare --net bash 
+[root@vm0pncorexa0001 proc]# ip link
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+```
+- Run same **ip link** comand and get same output. It is same interface we saw it before
+
+**How to make namespace persistent** 
+- Long running process
+- Create symlink file in /proc file system. Namespace persist by creating bind-mount
+```
+sudo unshare --net bash 
+readlink /proc/$$/ns/*
+touch /var/run/netns/lfnw
+mount --bind /proc/$$/ns/net /var/run/netns/lfnw
+ip netns list
+ip netns identify $$
+exit
+```
+- Now you can access lfnw namespace since there is active mount bind
+```
+ip netns list
+sudo ip netns exec lfnw ip link
+```
+
+
+
 
 ## **Cgroups** (Control Groups) 
 - Is a Linux system used for tracking, grouping and organizing the processes that run. Every Processes is tracked with cgroup regardless of whether it is container or none
