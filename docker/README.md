@@ -11,7 +11,7 @@ Containers are made up of three basic Linux which makes them separated from each
     3. IPC (Interprocess communication)
     4. User (currently experimental support for)
     5. Network
-    
+   
 **Cgroups** (Control Groups) 
 - Is a Linux system used for tracking, grouping and organizing the processes that run. Every Processes is tracked with cgroup regardless of whether it is container or none
 - Cgroups are typicle used to associated processes with resources. 
@@ -20,7 +20,12 @@ Containers are made up of three basic Linux which makes them separated from each
 
 **In Short** Cgroup is limit how much you can use and Namespace is limit what you can see and therefor use it
 
-**UNION FileSytem** 
+**What can you user cgroups for?**
+- cgroups can be used independently of containers 
+- cgroups control resource limits for processes
+- Monitor processes and organize them
+- Be careful not to break any assumptions your container runtime or orchestrator might have it
+    - example Amazon ECS uses cgroup hierarchy to know where to read CPU and memory utilization information and cutilizer does the same
 
 **Subsystem** 
 - Control groups system is an abstract framework
@@ -49,16 +54,19 @@ Containers are made up of three basic Linux which makes them separated from each
 - other files have settings and utilization data
 
 **subsystem Example**
+```
 ls /sys/fs/cgroup
 blkio    cpu,cpuacct  freezer  net_cls           perf_event
 cpu      cpuset       hugetlb  net_cls,net_prio  pids
 cpuacct  devices      memory   net_prio          systemd
-
+```
+```
 ls /sys/fs/cgroup/devices/
 cgroup.clone_children  cgroup.sane_behavior  devices.list       tasks
 cgroup.event_control   devices.allow         notify_on_release
 cgroup.procs           devices.deny          release_agent
-
+```
+```
 tree /sys/fs/cgroup/
 /sys/fs/cgroup/
 ├── blkio (block io controller)
@@ -83,11 +91,11 @@ tree /sys/fs/cgroup/
     │   │   ├── cgroup.procs
     │   │   ├── notify_on_release
     │   │   └── tasks
-
+```
 - These bunch of files are interfaces into the kernal data stracture for cgroups
 - To find find which cgroup an arbitary process ID assigned to, you can find from /proc file 
 - proc file system that contains directory that corresponds to each Process ID
-
+```
 ls /proc
 1      1639   27541  330   364   545   816  875   9467         loadavg
 10     16796  2798   331   365   546   817  876   954          locks
@@ -127,13 +135,13 @@ ls /proc
 16     26825  329    362   543   814   873  9188  kpagecount
 16056  2730   33     363   544   815   874  919   kpageflags
 
-
+```
 - find shell process which is regular process 
 echo $$
 16939
 
 - Lets looks the cgroup of current shell process ID
-
+```
 cat /proc/16939/cgroup
 11:memory:/
 10:devices:/
@@ -146,8 +154,17 @@ cat /proc/16939/cgroup
 3:perf_event:/
 2:freezer:/
 1:name=systemd:/user.slice/user-32394.slice/session-c6254.scope
-
+```
 single / slash indicates most of the cgroups are in root directory
+
+**Process Limit** can be control by updating file pids.max, it can only run mentioned number of process under this subsystem. By defaultm there is no limit.
+
+**Docker** uses its own cgroup cal docker
+- ls /sys/fs/cgroup/cpu/docker 
+
+
+**UNION FileSytem**
+
 
 ## Install docker on debian box 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-debian-10
