@@ -46,6 +46,13 @@ git branch -D <branchname>` # local\
 git push origin --delete <branchname> #remote
 ```
 
+## Rename local branch 
+```
+git branch -m <oldname> <newname> # If you want to rename a branch while pointed to any branch
+git branch -m <newname> #If you want to rename the current branch
+git push origin -u <newname> # push new branch to upstream
+```
+
 ## Rebase: How to remove multiple commits and combine to single commits
 ```
  git checkout master
