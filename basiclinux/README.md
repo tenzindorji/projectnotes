@@ -780,3 +780,8 @@ Here is the command to dump gc collection from live java process\
 `jmap -dump:live,format=b,file=/tmp/gc.hprof <pid>`
 
 # Difference between paging and swapping
+
+# Scan vulnerable jar files 
+```
+zip -v 2> /dev/null 1> /dev/null; isZip=$?; jars=$( (ls -l /proc/*/fd | grep -Eo '\S+jar' | grep -v "jdk|jre") 2> /dev/null); for i in $jars ; do var=$(echo $i | grep -i "log4j.*jar") 2> /dev/null; if [ ! -z "$var" ]; then echo $i; else if [ "$isZip" -eq 0 ]; then (zip -sf $i | grep -i "log4j.*jar") 2> /dev/null; else (jar -tf $i | grep -i "log4j.*jar") 2> /dev/null; fi; fi; done;
+```
