@@ -33,6 +33,7 @@
 ## checkout single file from remote
 `git checkout origin/master -- filename or full_path`
 
+
 ## Create local and remote branch
 ```
 git checkout master
@@ -81,3 +82,8 @@ git push -u origin HEAD
 ## log
 `git log --all --oneline` 
 
+## Changes in staging area
+`git stash list`\
+`git stash apply`  # replay changes to working dir but will not remove from staging area \
+`git stash push` and `git stash pop` # replay changes to working dir and removes from stash area\
+`git stash clear` 
