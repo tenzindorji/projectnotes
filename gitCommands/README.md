@@ -1,5 +1,11 @@
 ## Git Commands
 
+## Generate SSH key 
+`ssh-keygen -t ed25519 -C "github ssh key`
+
+## Test github connection 
+`ssh -T git@github.com`
+
 # Resolving git conflicts:
   - It occurs when two users make changes to same line of code.
   - After resolving code conflicts by deleting the conflicting code from git UI, need to merge the commits
