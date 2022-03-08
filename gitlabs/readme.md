@@ -64,4 +64,29 @@
  - Shared runners are hosted by gitlab
  - Specific runners
 
- 
+## Pipeline
+ - Under CI/CD -> Editor -> Create new pipeline
+ - download maven in 5minutes and commit to your gitlab project repo
+
+## Migrating to gitlab CI/CD from jenkins pipelines
+- Explain difference between Jenkins pipelines and Gitlab CI/CD
+- Migrate your own Jenkins pipelines to gitlab pipelines
+- use gitlab pipelines to run tests on the lambda test Selenium Automation tool
+
+## Terminology Mapping
+- Define a mapping of terms between declarative Jenkins pipelines and gitlab CI/CD
+- Agent section
+ - Defines which jenkins agents should execute the pipeline
+ - In gitlab we use Runners, which executes jobs.
+- Stages section
+ - both Defines chronological order of a pipeline
+ - however, in gitlab stages are enumerated in a list at the top of the pipeline defination
+- Steps section
+ - Define commands to be executed by the jenkins agent
+ - Gitlab has the equivalent *script* section
+- Jenkins *environment* directive
+ - Define environment variables avaiable during pipeline runtime
+ - gitlab uses the *variables* keyword
+- Jenkins *tools* directive
+ - Install tools necessary to execute the pipeline steps
+ - Gitlab has no equivalent and uses pre-built Docker container images
