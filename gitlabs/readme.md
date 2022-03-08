@@ -41,4 +41,27 @@
 ## Interface
 - gitlab.com
 
-## CI/CD in Gitlab
+## CI/CD in Gitlab Learning objectives
+- Demonstrate an understanding of how gitlab pipelines integrate with a gitlab project
+- implement gitlab pipelines in your own gitlab projects
+- write a gitlab pipeline that produces artifacts
+- write a gitlab pipeline that caches dependencies
+- write a gitlab pipeline that uses variables
+- Describe that anatomy of a gitlab pipeline
+
+## CI/CD terminology
+- Pipeline
+  - The top-level component used to define a CI/CD process
+  - within a pipeline, we can degine stages and jobs
+- Jobs
+  - Associated with stages
+  - Define the actual steps to be executed(such as running commands to compile code)
+- Stages
+ - Define the chronological order of jobs
+- Runners
+ - Open-source application that executes the instructions defined within jobs
+ - It can be installed on your local machine, a cloud server or on-perm
+ - Shared runners are hosted by gitlab
+ - Specific runners
+
+ 
