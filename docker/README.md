@@ -308,6 +308,9 @@ single / slash indicates most of the cgroups are in root directory
 ## Install docker on debian box 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-debian-10
 
+## Install docker on Linux: 
+https://computingforgeeks.com/install-docker-ce-on-rhel-7-linux/
+
 ## Docker commands
   - practice lab: https://kodekloud.com/p/docker-labs
 
