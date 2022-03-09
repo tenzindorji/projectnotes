@@ -310,6 +310,15 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-o
 
 ## Install docker on Linux: 
 https://computingforgeeks.com/install-docker-ce-on-rhel-7-linux/
+```
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli containerd.io
+sudo systemctl enable --now docker.service
+sudo systemctl start docker.service
+sudo systemctl start docker.service
+docker version
+docker run hello-world
+```
 
 ## Docker commands
   - practice lab: https://kodekloud.com/p/docker-labs
