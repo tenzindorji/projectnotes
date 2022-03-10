@@ -254,7 +254,7 @@ spec:
 ## Rancher Installation
 - bring up single node RKE cluster and later add second node and run `rke up`
 - rolebase access, one person leaves the org, disabling his account will clean up whatever resources he created
-- `docker run -d --restart=unless-stopped  -p 80:80 -p 443:443 --privileged /opt/rancher:/data/apps/rancher rancher/rancher:latest` # bind to docker vol to persistent location /opt/ and /var/  *check the disk space, needs atleast 50 GB in var or data
+- `docker run -d --restart=unless-stopped  -p 80:80 -p 443:443 --privileged -v /opt/rancher:/data/apps/rancher rancher/rancher:latest` # bind to docker vol to persistent location /opt/ and /var/  *check the disk space, needs atleast 50 GB in var or data
 - from browser, use server IP to access the rancher. Bt default it uses selfsigned certificate. Will ask to set admin password, provide server URL(important) and will be used for connecting to Kubernetes cluster
 - Default, it provide two namespaces
   - system  - leave it alone
