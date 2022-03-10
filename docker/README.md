@@ -310,6 +310,15 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-o
 
 ## Install docker on Linux: 
 https://computingforgeeks.com/install-docker-ce-on-rhel-7-linux/
+
+**Clean up before docker installation*
+```
+yum list installed|grep -i docker
+#Example remove all the docker repo as show below
+yum remove docker-client.x86_64 docker-common.x86_64 docker-rhel-push-plugin.x86_64 
+```
+**Install docker**
+
 ```
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum install docker-ce docker-ce-cli containerd.io
