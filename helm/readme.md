@@ -1,8 +1,15 @@
 # Helm
 - package manager for kubernetes
-- performs value lookup in the template, separate variables in values.yml
-- keeps old version and can easily rollback
-- chart - templating
+- Avoid yaml duplication
+- Allows to bring all the yaml file togather, whats call a chart
+- Charter have a name, description and version
+- Charter groups all the yaml files togather in a  template folder
+- To make charter resuable, it has a ability to inject values as parameters 
+- We can deploy chart and inject the app1 and reused for app2
+- Allows values file
+- Performs value lookup in the template, separate variables in values.yml
+- Keeps old version and can easily rollback
+- Chart - templating
 
 ```
 helm install myApp # Deploy to kubernetes cluster
