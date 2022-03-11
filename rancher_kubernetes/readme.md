@@ -50,8 +50,11 @@
 - Different from non-production solutions like minikube/microk8s/kind
 - Small binary / Uses 512MB of RAM for all of the kubernetes
 - Easily installed with K3sup from Alex Ellis \
-`k3sup install --ip=x.x.x.x --user=root --k3s-version=v1-17.7+k3s1`\
+`k3sup install --ip=x.x.x.x --user=root --k3s-version=v1-17.7+k3s1` remote server#
 `systemctl restart k3s`\
+
+Or `curl -sfL https://get.k3s.io | sh -` on the server\
+` k3s kubectl get node`
 - k3sup is pinged to particular version of k3s
 - it ssh to the server and install k3s binary
 - Now we have one node k3s cluster
@@ -254,7 +257,7 @@ spec:
 ## Rancher Installation
 - bring up single node RKE cluster and later add second node and run `rke up`
 - rolebase access, one person leaves the org, disabling his account will clean up whatever resources he created
-- `docker run -d --restart=unless-stopped  -p 80:80 -p 443:443 --privileged -v /opt/rancher:/data/apps/rancher rancher/rancher:latest` # bind to docker vol to persistent location /opt/ and /var/  *check the disk space, needs atleast 50 GB in var or data
+- `docker run -d --restart=unless-stopped  -p 80:80 -p 443:443 --privileged -v /opt/rancher:/var/rancher rancher/rancher:latest` # bind to docker vol to persistent location /opt/ and /var/  *check the disk space, needs atleast 50 GB in var or data
 - from browser, use server IP to access the rancher. Bt default it uses selfsigned certificate. Will ask to set admin password, provide server URL(important) and will be used for connecting to Kubernetes cluster
 - Default, it provide two namespaces
   - system  - leave it alone
