@@ -391,7 +391,8 @@ docker run hello-world
   - Inspect container\
     `docker inspect <container_name>` #all details of the container
   - Container log\
-    `docker logs <container_name>`
+    `docker logs <container_id>`
+    `docker logs --follow <container_id>` # live log
 
 Container only lives as long as process inside the container is running. Once it is completed, it exits and show status as exited
 
