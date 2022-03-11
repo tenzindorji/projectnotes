@@ -54,6 +54,7 @@
 `systemctl restart k3s`\
 
 Or `curl -sfL https://get.k3s.io | sh -` on the server\
+OR `curl -sfL https://get.k3s.io  | INSTALL_K3S_VERSION=v1.21.9+k3s1 sh -`\
 ` k3s kubectl get node`
 - k3sup is pinged to particular version of k3s
 - it ssh to the server and install k3s binary
