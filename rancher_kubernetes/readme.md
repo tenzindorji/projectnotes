@@ -59,10 +59,12 @@ Or `curl -sfL https://get.k3s.io | sh -` on the server\
 - it ssh to the server and install k3s binary
 - Now we have one node k3s cluster
 - set kubeconfig\
-`set -x KUBECONFIG (pwd)/kubeconfig`\
-`kubectl get nodes`
+` export KUBECONFIG=/etc/rancher/k3s/k3s.yaml`\
+`kubectl get nodes`\
+`kubectl get pods --all-namespaces`
 
-## Kubernetes 101m, 99% of kubernetes
+
+## Kubernetes 101, 99% of kubernetes
 - Pods
 - ReplicatSets
 - Deployments
