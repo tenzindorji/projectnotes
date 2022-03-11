@@ -393,6 +393,9 @@ docker run hello-world
   - Container log\
     `docker logs <container_id>`
     `docker logs --follow <container_id>` # live log
+    
+    - Volume, sometime, /var disk runs out. Need to perform disk cleanup to remove unused volume\
+    `docker volume prune`
 
 Container only lives as long as process inside the container is running. Once it is completed, it exits and show status as exited
 
