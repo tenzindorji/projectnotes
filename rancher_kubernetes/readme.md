@@ -189,13 +189,13 @@ spec:
 `kubectl create deploy nginx --image=nginx:1.16-alpine --dry-run=client -o yaml`\ # prints deployment yml in console
 `kubectl get deploy`\
 `kubectl get rs`\
-`kubectl get pods/<pod_name> -o yaml ^&1 | less` # prints out pods config
-`kubectl describe po <pod_name> -o yaml ^&1 |less` # kubernetes understanding of object from outside, everything of object, more information, used for stopped pods
-`kubectl scale deploy/nginx --replicas=3`
-`kubectl set image deploy/nginx nginx=nginx:1.17-alpine` #upgrade
-`kubectl rollout status deploy/nginx`
-`kubectl rollout undo deploy/nginx`
-`kubectl edit deploy/nginx` # can edit on the fly
+`kubectl get pods/<pod_name> -o yaml ^&1 | less` # prints out pods config\
+`kubectl describe po <pod_name> -o yaml ^&1 |less` # kubernetes understanding of object from outside, everything of object, more information, used for stopped pods\
+`kubectl scale deploy/nginx --replicas=3`\
+`kubectl set image deploy/nginx nginx=nginx:1.17-alpine` #upgrade\
+`kubectl rollout status deploy/nginx`\
+`kubectl rollout undo deploy/nginx`\
+`kubectl edit deploy/nginx` # can edit on the fly\
 `kubectl delete deploy/nginx`
 
 
