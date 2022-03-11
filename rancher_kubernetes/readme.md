@@ -63,6 +63,9 @@ Or `curl -sfL https://get.k3s.io | sh -` on the server\
 `kubectl get nodes`\
 `kubectl get pods --all-namespaces`
 
+- Unstall k3s
+`/usr/local/bin/k3s-uninstall.sh`
+
 
 ## Kubernetes 101, 99% of kubernetes
 - Pods
