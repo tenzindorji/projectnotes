@@ -194,7 +194,14 @@ CMD ["python3", "serve.py"]
 ```
 
 - Build Docker image using Dockerfile\
-`docker build -t mywebsite .`
+`docker build -t uptime .`\
+`docker tag uptime tenzindorji/uptime:v1`\
+`docker images`
+
+- Before pushing the image to docker hub, login to docker hub
+`docker logout`\
+`docker login`\
+`docker push tenzindorji/uptime:v1`
 
 - Start the docker container using image, and bind host and container ports `-p HOST_PORT:CONTAINER_PORT`\
 `docker image` # list the image ID
