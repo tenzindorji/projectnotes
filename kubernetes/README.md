@@ -110,6 +110,12 @@ spec:
   - It can be done through ingress controller or LB
   - It can provide LB, SSL termination and name-based virtual hosting.
   - is an API object that provides routing rules to manage external users' access to the services in a Kubernetes cluster
+  - Evalautes all the rules
+  - Manages redirections
+  - Entrypoint to cluster
+  - It is managed using ingress controler Pod provided by Kubernetes itself K8s nignx Ingress Controller
+  - There are many third party ingress implemention, ELB, Proxy server - this will be entrypoint to the cluster and then request will go to ingress controller.
+  - 
 
 # Other components:
 1. Replication controller
