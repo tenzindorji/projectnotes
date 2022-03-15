@@ -455,6 +455,10 @@ $feed->handle_content_type();
 `docker commit -m "Message" -a "Author Name" [containername] [imagename]`\
 `docker commit -m "Added RSS" -a "Nick Chase" <containername> tenzindorji/rss-php-nginx:v1`
 
+**Note** Before pushing the image, make sure to login to docker hub\
+`docker logout`\
+`docker login`
+
 `docker push tenzindorji/rss-php-nginx:v1`
 
 9. Remove container and image and build it using new image
