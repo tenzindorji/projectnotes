@@ -7,24 +7,62 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: mysite-nginx
   labels:
-    app: nginx
+    app: mysite-nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      app: mysite-nginx
   template:
     metadata:
       labels:
-        app: nginx
+        app: mysite-nginx
     spec:
       containers:
       - name: nginx
-        image: nginx:1.14.2
+        image: nginx
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: mysite-html
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  mysite-nginx-service
+spec:
+  selector:
+    app: mysite-nginx
+  ports:
+    - protocol: TCP
+      port: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mysite-nginx-ingress
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /mysite
+        pathType: Prefix
+        backend:
+          service: 
+            name: mysite-nginx-service
+            port:
+              number: 80
+
 ```
 
 3. Create a deployment using deployment file 
@@ -41,3 +79,32 @@ spec:
 
 7. Delete deployments 
 `./kubectl.exe delete deployment <deplyoment_name> -n <name_space>`
+
+```
+<html>
+<head><title>K3S!</title>
+  <style>
+    html {
+      font-size: 62.5%;
+    }
+    body {
+      font-family: sans-serif;
+      background-color: midnightblue;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+    }
+    div {
+      text-align: center;
+      font-size: 8rem;
+      text-shadow: 3px 3px 4px dimgrey;
+    }
+  </style>
+</head>
+<body>
+  <div>Hello from K3S!</div>
+</body>
+</html>
+```
