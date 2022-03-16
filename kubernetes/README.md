@@ -20,26 +20,17 @@
   - automatic bin packing
 
 # Kubernets Architecture
-  1. kubectl (work station)
-  2. master nodes:\
-    1. ETCD (Cluster Store )\
-          - This component stores the configuration details and essential values\
-          - It communicates with all other components to receive commands and work in order to perform action\
-          - It also manages networking rules and post forwarding activity\
-    2. Controller manager\
-          - It is a deamon (server) that runs in a continuous loop  and responsible for gathering information\
-          sending it to an API Servers
-          - It works to get the shared set of clusters and change them to desire state of the server\
-    3. Scheduler\
-          - Assigns task to the slave nodes\
-          - it is responsible for distributing work load and it stores resource usage information of every node\
-          - It tracks how the working load is used on the cluster and, places the load on available resources.\
-    4. API Server
-  3. nodes, each nodes has multiple pods and each pod can have multiple containers(dockers)\
-    1. Docker\
-    2. kubelet\
-    3. Kubernetes proxy
-
+  1. API Server:  - API servers perform all the administrative tasks on the master nodes. Users send the command to the API server, which then validates the request process and executes them. The API server determines if the request is valid or not and then processes it. 
+  2. Key-Value Store(etcd) - Etcd is an open-source distributed Key-Value Store used to hold and manage the critical information that distributed systems need to keep running. Is a database kubernetes uses to backup all the cluster data. It stores the entire configuration and state of the cluster. 
+  
+  3. Controller - The role of the Controller is to obtain the desired state from the API server. It checks the current state of the nodes it is tasked to control, and determines if there are any differences.
+  4. Scheduler - The Scheduler's main job is to watch for new requests coming from the API server and assign them to healthy nodes. It ranks the quality if the nodes and deploys pods to the best-suited node.
+  5. Worker nodes:
+    - Container runtime,  which runs on each work node. It pulls images and performs start stop. Docker is mostly used
+    - kubelet, runs on each node in the cluster or can say kubernetes agent. It watches for tasks sent from the API Server, executes the task, and reports back to the Master.
+    - Kube proxy, makes sure that each node gets its IP address. It runs on each worker node
+    - A pod,  is the smallest element of scheduling in Kubernetes. Without it, a container cannot be part of a cluster.
+  6. Services - One of the best features kubernetes offers is that non-functioning pods get replaced by new ones automatically. The new pods have a different set of IPs. It can lead to processing issues and IP churn as the IPs no longer match. If left unattended, this property would make pods highly unreliable.
 
 # Docker Swarm
   - Used for managing container like kubernetes
