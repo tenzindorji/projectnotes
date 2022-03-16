@@ -385,11 +385,18 @@ docker run hello-world
       
       # This shows, docker can supports same(80) port for multiple container, not with docker host, it needs to be unique. 
       docker ps --format "table {{.Image}}\t{{.Ports}}" 
-      IMAGE                 PORTS
       rancher/hello-world   0.0.0.0:700->80/tcp, :::700->80/tcp
       rancher/hello-world   0.0.0.0:800->80/tcp, :::800->80/tcp
       rancher/hello-world   0.0.0.0:80->80/tcp, :::80->80/tcp
+      rancher/hello-world   0.0.0.0:500->88/tcp, :::500->88/tcp, 0.0.0.0:600->99/tcp, :::600->99/tcp # Even during run time, docker did not support same docker host port
+      rancher/hello-world   0.0.0.0:200->80/tcp, 0.0.0.0:300->80/tcp, 0.0.0.0:400->80/tcp, :::200->80/tcp, :::300->80/tcp, :::400->80/tcp 
       ```
+      |Container|Docker host port|Container Port|validate|
+      |---|---|---|---|
+      |single|one(same)|Multi(unque)|Yes, need to expose multi container ports in docker file|
+      |multi|multi(unque)|one(same)|yes|
+      |multi|one(same)|multi(unque)|no|
+      
       - Docker host can have duplicate ports? , 80:8080(container1), 80:8080(container2), container1 and 2 are different web service
         - No, you will get below error if you try to bind second container with same docker host port.
         - Also, from outside world, container can be reached only on port 80,443 , thats why we use reverse_proxy(nginx) to support multiple services on single docker host
