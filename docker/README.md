@@ -382,9 +382,22 @@ docker run hello-world
       ```
       docker port my_container
       5000/tcp -> 0.0.0.0:80 ## 5000/tcp is the container port and 0.0.0.0:80 is the docker host port
+      
+      # This shows, docker can supports same(80) port for multiple container, not with docker host, it needs to be unique. 
+      docker ps --format "table {{.Image}}\t{{.Ports}}" 
+      IMAGE                 PORTS
+      rancher/hello-world   0.0.0.0:700->80/tcp, :::700->80/tcp
+      rancher/hello-world   0.0.0.0:800->80/tcp, :::800->80/tcp
+      rancher/hello-world   0.0.0.0:80->80/tcp, :::80->80/tcp
       ```
-      - Docker host can have duplicate ports, 80:8080(container1), 80:8080(container2), container1 and 2 are different web service?
-        - No, 
+      - Docker host can have duplicate ports? , 80:8080(container1), 80:8080(container2), container1 and 2 are different web service
+        - No, you will get below error if you try to bind second container with same docker host port.
+        - Also, from outside world, container can be reached only on port 80,443 , thats why we use reverse_proxy(nginx) to support multiple services on single docker host
+         ```
+         Bind for 0.0.0.0:80 failed: port is already allocated.
+        ```
+        - 0.0.0.0 on the server means, request is reacable by any local IP addresses to the container. 
+        - 
       - Port syntax 
       ```
       -P
