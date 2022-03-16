@@ -385,6 +385,7 @@ docker run hello-world
       
       # This shows, docker can supports same(80) port for multiple container, not with docker host, it needs to be unique. 
       docker ps --format "table {{.Image}}\t{{.Ports}}" 
+      nginx                 80/tcp # container port is not bind with docker host port, not accessible from docker host
       rancher/hello-world   0.0.0.0:700->80/tcp, :::700->80/tcp
       rancher/hello-world   0.0.0.0:800->80/tcp, :::800->80/tcp
       rancher/hello-world   0.0.0.0:80->80/tcp, :::80->80/tcp
