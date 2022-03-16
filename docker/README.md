@@ -383,7 +383,7 @@ docker run hello-world
       docker port my_container
       5000/tcp -> 0.0.0.0:80 ## 5000/tcp is the container port and 0.0.0.0:80 is the docker host port
       ```
-      - Docker host can have duplicate ports?
+      - Docker host can have duplicate ports, 80:8080(container1), 80:8080(container2), container1 and 2 are different web service?
         - No, 
       - Port syntax 
       ```
@@ -391,6 +391,12 @@ docker run hello-world
       format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
       When specifying ranges for both, the number of container ports in the range must match the number of host ports in the range. (e.g., `-p 1234-1236:1234-1236/tcp`)
       ```
+      
+     - EXPOSE in docker file 
+         - EXPOSE line in docker file opens the port for the container but it is not exposed to anyone, not even to docker host. 
+         - You can open multiple container ports using EXPOSE line 
+         - To access from docker host/outside world, need to map the container port with docker host port, example
+         - `docker run -p <host_port>:<container_port> -d <image_id>`
   - Create vol\
     `docker volume create data_volume`
   - Vol mapping\
