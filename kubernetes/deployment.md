@@ -1,6 +1,6 @@
 ## Kubernetes code deployment steps 
 1. Authenticate with kubernetes cluster using pks cli or anyother available authentication tool\
-`./pks.exe get-kubeconfig <cluster_name> -u P2980250adm@example.com -a cdp-pks-01.corp.chartercom.com -k` 
+`./pks.exe get-kubeconfig <cluster_name> -u P2980250adm@example.com -a example.com -k` 
 - -a is API URL to connect with kubernetes cluster 
 2. Create a deloyment yaml file 
 ```
