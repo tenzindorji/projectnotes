@@ -31,10 +31,10 @@
 
 
 ## Node Components(Worker nodes):
-    - Container runtime,  which runs on each work node. It pulls images and performs start stop. Docker is mostly used
-    - kubelet, runs on each node in the cluster or can say kubernetes agent. It watches for tasks sent from the API Server, executes the task, and reports back to the Master.
-    - Kube proxy, makes sure that each node gets its IP address. It runs on each worker node
-    - A pod,  is the smallest element of scheduling in Kubernetes. Without it, a container cannot be part of a cluster.
+1. Container runtime, which runs on each work node. It pulls images and performs start stop. Docker is mostly used
+2. kubelet, runs on each node in the cluster or can say kubernetes agent. It watches for tasks sent from the API Server, executes the task, and reports back to the Master.
+3. Kube proxy, makes sure that each node gets its IP address. It runs on each worker node
+4. A pod,  is the smallest element of scheduling in Kubernetes. Without it, a container cannot be part of a cluster.
     
 ## Services 
 - One of the best features kubernetes offers is that non-functioning pods get replaced by new ones automatically. The new pods have a different set of IPs. It can lead to processing issues and IP churn as the IPs no longer match. If left unattended, this property would make pods highly unreliable.
