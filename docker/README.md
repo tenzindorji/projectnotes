@@ -379,7 +379,18 @@ docker run hello-world
       - Host port is the port which docker container process is running on docker host
       - Container port is the port which is exposed in docker file. It is within container. 
       - Host post and container ports need to bind to access the application outside of docker host. 
-      -
+      ```
+      docker port my_container
+      5000/tcp -> 0.0.0.0:80 ## 5000/tcp is the container port and 0.0.0.0:80 is the docker host port
+      ```
+      - Docker host can have duplicate ports?
+        - No, 
+      - Port syntax 
+      ```
+      -P
+      format: ip:hostPort:containerPort | ip::containerPort | hostPort:containerPort | containerPort
+      When specifying ranges for both, the number of container ports in the range must match the number of host ports in the range. (e.g., `-p 1234-1236:1234-1236/tcp`)
+      ```
   - Create vol\
     `docker volume create data_volume`
   - Vol mapping\
