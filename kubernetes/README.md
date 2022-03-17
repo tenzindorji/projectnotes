@@ -36,8 +36,27 @@
 3. Kube proxy - makes sure that each node gets its IP address. It runs on each worker node
 4. A pod -  is the smallest element of scheduling in Kubernetes. Without it, a container cannot be part of a cluster.
     
-## Services 
+## Services (What is it?) - Internal Service
 - One of the best features kubernetes offers is that non-functioning pods get replaced by new ones automatically. The new pods have a different set of IPs. It can lead to processing issues and IP churn as the IPs no longer match. If left unattended, this property would make pods highly unreliable.
+- Each Pod has its own IP address
+  - Pods are ephemeral - are destroyed frequenctly 
+- Service Provides 
+  - stable IP address
+  - loadbalancing 
+  - loose coupling
+  - within and outside cluster 
+
+## Types of services 
+- ClusterIP (Default)
+  - No type specified, it will automatically take clusterIP as a type
+  - How it works and where it is used
+    - Lets say, we have microservice app deployed
+    - and side-car container, that collects microservice logs
+
+
+  - Headless
+- NodePort
+- 
 
 # Docker Swarm
   - Used for managing container like kubernetes
