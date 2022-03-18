@@ -167,7 +167,7 @@
 
 
   ![NodePort communication](K8_service_loadbalancer.drawio.png)
-  [[K8_service_loadbalancer.drawio.png|width=400px]]
+  <img src="K8_service_loadbalancer.drawio.png" width="100" height="100">
 
 
   - NodePort Service NOT for external connection, use it for testing but not for production use cases.
