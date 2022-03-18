@@ -20,13 +20,13 @@
   - automatic bin packing
 
 # Kubernets Architecture
-## Control Plane: 
-  1. API Server:  - API servers perform all the administrative tasks on the master nodes. Users send the command to the API server, which then validates the request process and executes them. The API server determines if the request is valid or not and then processes it. 
+## Control Plane:
+  1. API Server:  - API servers perform all the administrative tasks on the master nodes. Users send the command to the API server, which then validates the request process and executes them. The API server determines if the request is valid or not and then processes it.
 
-  2. Key-Value Store(etcd) - Etcd is an open-source distributed Key-Value Store used to hold and manage the critical information that distributed systems need to keep running. Is a database kubernetes uses to backup all the cluster data. It stores the entire configuration and state of the cluster. 
-  
+  2. Key-Value Store(etcd) - Etcd is an open-source distributed Key-Value Store used to hold and manage the critical information that distributed systems need to keep running. Is a database kubernetes uses to backup all the cluster data. It stores the entire configuration and state of the cluster.
+
   3. Controller - The role of the Controller is to obtain the desired state from the API server. It checks the current state of the nodes it is tasked to control, and determines if there are any differences.
-  
+
   4. Scheduler - The Scheduler's main job is to watch for new requests coming from the API server and assign them to healthy nodes. It ranks the quality if the nodes and deploys pods to the best-suited node.
 
 
@@ -35,28 +35,143 @@
 2. kubelet - runs on each node in the cluster or can say kubernetes agent. It watches for tasks sent from the API Server, executes the task, and reports back to the Master.
 3. Kube proxy - makes sure that each node gets its IP address. It runs on each worker node
 4. A pod -  is the smallest element of scheduling in Kubernetes. Without it, a container cannot be part of a cluster.
-    
+
 ## Services (What is it?) - Internal Service
 - One of the best features kubernetes offers is that non-functioning pods get replaced by new ones automatically. The new pods have a different set of IPs. It can lead to processing issues and IP churn as the IPs no longer match. If left unattended, this property would make pods highly unreliable.
+- It is component just like a Pod but not a process, it is just a abstraction layer that basically represent IP address
+  - It will have its own IP address which it will be accessible
+  - Also will have its own port and it is arbitrary, you can define your own Service Port
 - Each Pod has its own IP address
-  - Pods are ephemeral - are destroyed frequenctly 
-- Service Provides 
-  - stable IP address
-  - loadbalancing 
-  - loose coupling
-  - within and outside cluster 
+  - Pods are ephemeral - are destroyed frequently
+  - Thats why Service Provides
+    - stable IP address
+    - loadbalancing
+    - loose coupling
+    - within and outside cluster
 
-## Types of services 
+## Types of services - There are three types
+- 3 Service type attributes
+  - clusterIP
+  - NodePort
+  - Loadbalancer
+
 - ClusterIP (Default)
   - No type specified, it will automatically take clusterIP as a type
-  - How it works and where it is used
-    - Lets say, we have microservice app deployed
-    - and side-car container, that collects microservice logs
+  - internal service
+  - Accessible only within a cluster  
+  - How does it work and where it is used
+    - Lets say, we have microservice app deployed on port 3000
+    - and side-car container on 9000, that collects microservice logs
+    - Pod will get IP addresses from Node's range, example
+      - Node1 has 10.2.1.x
+      - Node2 has 10.2.2.x
+      - Node3 has 10.2.3.x
+    - It should have
+      - kind: Service
+      - name: Service Name
+      - selector
+        - app: app_name
+      - ports
+        - port: 3200 (serviceport)
+        - targetPort: 3000 (Pod port)
+    - Once the ingress hands over request to service, service knows where to send to request
+      - How does service know which pods to forward the request to?
+        - Pods are identified by "selector" attribute in service yaml file
+        - And labels in deployment yaml file  
+        - labels and selector should have same key value.
+          - svc matches all the replicas
+          - It registers as Endpoints
+          - must match ALL the selectors
+      - How does service know which port to forward the request to if pod has multiple ports open?
+        - Using targetPort attribute, it is not arbitrary, it has to match the container's Port.
+      - Service Endpoints
+        - `kubectl get endpoints`\
+        - K8s creates Endpoint object same name as Service
+        - Keeps track of, which Pods are the members/endpoints of the Service
+      - Multi-Port Service, how does it know? by name
+        - Ports:
+            - name: mongodb
+              port: 27017
+            - name: mongodb-exporter
+              port: 9216
+
+    - Get IP addresses of pod `kubetctl get pod -o wide`
 
 
-  - Headless
-- NodePort
-- 
+  - Headless  
+    - when do you use this?
+      - Client wants to communicate with 1 specific Pod directly
+      - Pods want to talk directly with specific Pod
+      - so, not randomly selected
+      - use Case: Stateful applications, like databases, mysql, mongodb, elasticsearch
+        - Pod replicas are not identical,
+          - master instance(reading and writing) <-- data replication -->  worker instance(reading)
+          - when new work is started, it must connect directly to most recent worker node to clone the data from and get upto date state
+          - Data synchronization
+          - client wants to talk to pod directly
+        - complex situation
+
+    - Now, client needs to figure out IP addresses of each Pod
+      - Option 1 - API call to K8s API server ?
+        - makes app too tied to K8s API
+        - inefficient
+      - Option 2 - DNS lookup, Kubernetes allows client to discover Pod IP addresses through DNS lookups.
+        - When a client  performs DNS lookup for a service, it return single IP address of a service(ClusterIP address)
+        - But, we do not need clusterIP address of the service, by setting the `clusterIP: None` , then the DNS service will return the Pod IP address. Now a client can do simple DNS lookup to get the IP address of the Pods that are member of the service, and client can use the IP address to connect to the specific Pod or to all the Pods
+
+    - No Cluster IP address is assigned  
+
+![ClusterIP communication](k8_service.drawio.png)
+
+- NodePort Service
+  - Creates a service that is accessible on a static port on each worker node in a cluster
+  - External traffic has access to fixed port on each worker Node!
+    - ip-address worker node:NodePort
+  - Defined in nodePort Attribute in a service yaml file
+    - Ports:
+      - protocol: TCP
+        port: 3200
+        targetPort: 3000
+        nodePort: 30008
+  - Has a predefine range between 30000 - 32767 , anything outside of this range will not be accepted.
+  - ClusterIP Service is automatically created
+  - NodePort will have the clusterIP address and for each IP address, it will also have the  Ports open where the service is accessible at.
+  - NodePort Services not efficient and are not secured since it will be directly accessible to pod from outside cluster
+  - So Better alternative is Loadbalancer Service type
+
+![NodePort communication](K8_service_nodeport.drawio.png)
+
+- Loadbalancer Service
+  - Service becomes accessible externally through cloud providers Loadbalancer
+  - Whenever Loadbalancer Service is created, NodePort and ClusterIP are created automatically to which external Loadbalancer of the cloud platform will route the traffic to.
+  - LoadBalancer Service is an extension of NodePort Service
+  - NodePort Service is an extension of ClusterIP Service
+  - Config:
+  ```
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: ms-service-loadbalancer
+  spec:
+    type: LoadBalancer
+    selector:
+      app: microservice-one
+    ports:
+      - protocol: TCP
+        port: 3200
+        targetPort: 3000
+        nodePort: 30010
+  ```
+
+  - `kubectl get svc`
+
+
+  ![NodePort communication](K8_service_loadbalancer.drawio.png)
+
+
+  - NodePort Service NOT for external connection, use it for testing but not for production use cases.
+
+
 
 # Docker Swarm
   - Used for managing container like kubernetes
@@ -132,7 +247,7 @@ spec:
   - Entrypoint to cluster
   - It is managed using ingress controler Pod provided by Kubernetes itself K8s nignx Ingress Controller
   - There are many third party ingress implemention, ELB, Proxy server - this will be entrypoint to the cluster and then request will go to ingress controller.
-  - 
+  -
 
 # Other components:
 1. Replication controller
@@ -155,7 +270,7 @@ spec:
 10. service
     - It is a abstraction on  top of pods which provides a single  IP address and DNS name by which \
       the pods can be accessed
-    - A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. Services enable a loose coupling between dependent Pods. 
+    - A Service in Kubernetes is an abstraction which defines a logical set of Pods and a policy by which to access them. Services enable a loose coupling between dependent Pods.
 ```
 apiVersion: v1
 kind: Service
@@ -260,8 +375,8 @@ spec:
 A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume.
 
 # Deployment types
-1. Recreate deployment 
-- used in dev environment, running container is terminated and created with new contianer 
+1. Recreate deployment
+- used in dev environment, running container is terminated and created with new contianer
 2. Rolling update
 - deploy new version of app, and terminate one version
 - Deployment with new replicaSet is launched and replicaSet of old version is terminated. Eventually all the old version is terminated
@@ -290,4 +405,3 @@ A ConfigMap is an API object used to store non-confidential data in key-value pa
 
 3. using nc command to validate the firewall rules\
 `nc -vz -w 2 111.111.111.111 443`
-
