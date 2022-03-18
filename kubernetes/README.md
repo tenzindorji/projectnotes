@@ -121,7 +121,7 @@
 
     - No Cluster IP address is assigned  
 
-<img src="k8_service.drawio.png" width="500" height="400">
+<img src="k8_service.drawio.png" width="700" height="600">
 
 
 - NodePort Service
