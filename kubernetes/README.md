@@ -147,7 +147,7 @@
 
 
 - Loadbalancer Service
-
+  - External Loadbalancer Service
   <img src="K8_service_loadbalancer.drawio.png" width="500" height="400">
 
   - Service becomes accessible externally through cloud providers Loadbalancer and have external IP allocated to it.
