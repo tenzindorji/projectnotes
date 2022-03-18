@@ -127,7 +127,7 @@
 
 - NodePort Service
 
-<img src="K8_service_nodeport.drawio.png" width="500" height="400">
+<img src="K8_service_nodeport.drawio.png" width="400" height="200">
 
   - Creates a service that is accessible on a static port on each worker node in a cluster
   - External traffic has access to fixed port on each worker Node! Only used for testing
@@ -148,7 +148,7 @@
 
 - Loadbalancer Service
 
-  <img src="K8_service_loadbalancer.drawio.png" width="500" height="400">
+  <img src="K8_service_loadbalancer.drawio.png" width="400" height="200">
 
   - Service becomes accessible externally through cloud providers Loadbalancer and have external IP allocated to it.
   - Whenever Loadbalancer Service is created, NodePort and ClusterIP are created automatically to which external Loadbalancer of the cloud platform will route the traffic to.
@@ -247,7 +247,7 @@ spec:
 
   - It takes little of time to assign IP address to ingress after deploying ingress.
   `kubectl get ingress -n <name_space> watch` \
-  ` kubectl get all -n platform-dev`
+  `kubectl get all -n platform-dev`
 
   - More on routing
     - path base routing
