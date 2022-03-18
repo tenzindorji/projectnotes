@@ -215,6 +215,7 @@ spec:
       port: 8080
       targetPort: 8080
 ```
+
 - When do you need ingress?
 - Ingress Controller
   - Creating ingress component alone, that won't be enough for routing rules to work.
@@ -225,6 +226,84 @@ spec:
   - entrypoint to cluster
   - many third-party implementations
   - Nginx is K8s supported controller
+- Ingress Also have something call default_backend. Whenever request comes to Kubernetes cluster which is not mapped to any backend, so there is no rule for mapping the request to a service , then default backend is used to handle that request.
+  - `kubectl describe ingress <ingress_name> -n <name_space>`\
+    `kubectl describe ingress uptime -n platform-dev`
+  - Then you can create a service name same as default-http-backend and same port  and route to desire landing backend to handle to customer error message.
+
+  ```
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: default-http-backend
+  spec:
+    selector:
+      app: default-http-backend
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 8080
+  ```
+
+  - It takes little of time to assign IP address to ingress after deploying ingress.
+  `kubectl get ingress -n <name_space> watch` \
+  ` kubectl get all -n platform-dev`
+
+  - More on routing
+    - path base routing
+    ```
+    - host: myapp.com
+    ...
+      - path: /shopping
+      ...
+      ...
+      - path: /movie
+    ```
+    - host base routing
+    ```
+    - host: shopping.myapp.com
+      http:
+        paths:
+          backend:
+            serviceName: shopping-service
+            sevicePort: 3000
+            ...
+            ...
+    - host: movie.myapp.com
+
+    ```
+  - TLS certificate
+    - https
+    ```
+    apiVersion: v1
+    kind: Ingress
+    metadata:
+      name: myapp-ingress
+    spec:
+      tls:
+      - hosts:
+        - myapp.com
+        secreName: myapp-secret-tls
+      rules:
+      - host: myapp.com
+        http:
+          paths:
+          - backend:
+              serviceName: myapp-internal-service
+              servicePort: 8080
+    ```
+    - Secret configuration
+    ```
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: myapp-secret-tls
+      namespace: default # should be created in same namespace as a ingress component
+    data:
+      tls.crt: base64 encoded cert # values are file content, NOT the paths/location , key should be named exactly as mentioned.
+      tls.key: base64 encoded key
+    type: kubernetes.io/tls
+    ```
 
 # Entrypoint
 - Ingress Controller is the entrypoint
