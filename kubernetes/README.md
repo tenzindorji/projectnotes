@@ -56,6 +56,9 @@
   - Loadbalancer
 
 - ClusterIP (Default)
+
+<img src="k8_service.drawio.png" width="700" height="600">
+
   - No type specified, it will automatically take clusterIP as a type
   - internal service
   - Accessible only within a cluster  
@@ -121,13 +124,14 @@
 
     - No Cluster IP address is assigned  
 
-<img src="k8_service.drawio.png" width="700" height="600">
-
 
 - NodePort Service
+
+<img src="K8_service_nodeport.drawio.png" width="500" height="400">
+
   - Creates a service that is accessible on a static port on each worker node in a cluster
-  - External traffic has access to fixed port on each worker Node!
-    - ip-address worker node:NodePort
+  - External traffic has access to fixed port on each worker Node! Only used for testing
+    - http://ip-address-worker:NodePort
   - Defined in nodePort Attribute in a service yaml file
     - Ports:
       - protocol: TCP
@@ -140,23 +144,27 @@
   - NodePort Services not efficient and are not secured since it will be directly accessible to pod from outside cluster
   - So Better alternative is Loadbalancer Service type
 
-  <img src="K8_service_nodeport.drawio.png" width="500" height="400">
+
 
 - Loadbalancer Service
-  - Service becomes accessible externally through cloud providers Loadbalancer
+
+  <img src="K8_service_loadbalancer.drawio.png" width="500" height="400">
+
+  - Service becomes accessible externally through cloud providers Loadbalancer and have external IP allocated to it.
   - Whenever Loadbalancer Service is created, NodePort and ClusterIP are created automatically to which external Loadbalancer of the cloud platform will route the traffic to.
   - LoadBalancer Service is an extension of NodePort Service
   - NodePort Service is an extension of ClusterIP Service
-  - Config:
+  - Each service with type LoadBalancer will create new LoadBalancer and that will cost lot of money.
+  - External Service Loadbalancer Config:
   ```
   apiVersion: v1
   kind: Service
   metadata:
-    name: ms-service-loadbalancer
+    name: myapp-loadbalancer
   spec:
     type: LoadBalancer
     selector:
-      app: microservice-one
+      app: myapp
     ports:
       - protocol: TCP
         port: 3200
@@ -166,11 +174,61 @@
 
   - `kubectl get svc`
 
-  <img src="K8_service_loadbalancer.drawio.png" width="500" height="400">
-
 
   - NodePort Service NOT for external connection, use it for testing but not for production use cases.
 
+
+# Ingress
+- What is Ingress?
+- External Service vs Ingress
+  1. Internal service has no NodePort whereas External service, need to mention NodePort
+  2. Internal service type is default ClusterIP, whereas External service type is Loadbalancer
+  3. host attribute in internal service should be valid domain and should be mapped with entrypoint's IP address or Node's IP address(ingress controller), whereas External LB, ingress controller is not required.
+
+
+- Ingress YAML configuration  
+```
+apiVersion: v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+spec:
+  rules:
+  - host: myapp.com
+    http: # Second step - Incoming request gets forwarded to internal service, this is not protocol, this does not correspond to http URL in browser.
+      paths:
+      - backend:
+          serviceName: myapp-internal-service
+          servicePort: 8080
+```
+- Internal Service looks like
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-internal-service
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+```
+- When do you need ingress?
+- Ingress Controller
+  - Creating ingress component alone, that won't be enough for routing rules to work.
+  - So, need an implementation for ingress call ingress controller.
+  - Install ingress controller Pod in your cluster, thus evaluation and processing ingress rules.  
+  - evaluates all the rules
+  - manages redirections
+  - entrypoint to cluster
+  - many third-party implementations
+  - Nginx is K8s supported controller
+
+# Entrypoint
+- Ingress Controller is the entrypoint
+- Domain should be provisioned to point to Ingress IP address(ATT, route53 or internal DNS server)
 
 
 # Docker Swarm
