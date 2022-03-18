@@ -121,7 +121,8 @@
 
     - No Cluster IP address is assigned  
 
-![ClusterIP communication](k8_service.drawio.png)
+<img src="k8_service.drawio.png" width="500" height="400">
+
 
 - NodePort Service
   - Creates a service that is accessible on a static port on each worker node in a cluster
@@ -139,7 +140,7 @@
   - NodePort Services not efficient and are not secured since it will be directly accessible to pod from outside cluster
   - So Better alternative is Loadbalancer Service type
 
-![NodePort communication](K8_service_nodeport.drawio.png)
+  <img src="K8_service_nodeport.drawio.png" width="500" height="400">
 
 - Loadbalancer Service
   - Service becomes accessible externally through cloud providers Loadbalancer
@@ -165,9 +166,7 @@
 
   - `kubectl get svc`
 
-
-  ![NodePort communication](K8_service_loadbalancer.drawio.png)
-  <img src="K8_service_loadbalancer.drawio.png" width="100" height="100">
+  <img src="K8_service_loadbalancer.drawio.png" width="500" height="400">
 
 
   - NodePort Service NOT for external connection, use it for testing but not for production use cases.
