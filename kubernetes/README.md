@@ -19,7 +19,7 @@
   - automated roll out and roll back
   - automatic bin packing
 
-# Kubernets Architecture
+# Kubernetes Architecture
 ## Control Plane:
   1. API Server:  - API servers perform all the administrative tasks on the master nodes. Users send the command to the API server, which then validates the request process and executes them. The API server determines if the request is valid or not and then processes it.
 
@@ -31,10 +31,51 @@
 
 
 ## Node Components(Worker nodes):
-1. Container runtime - which runs on each work node. It pulls images and performs start stop. Docker is mostly used
-2. kubelet - runs on each node in the cluster or can say kubernetes agent. It watches for tasks sent from the API Server, executes the task, and reports back to the Master.
-3. Kube proxy - makes sure that each node gets its IP address. It runs on each worker node
-4. A pod -  is the smallest element of scheduling in Kubernetes. Without it, a container cannot be part of a cluster.
+- Has three main components
+  1. Container runtime - which runs on each work node. It pulls images and performs start stop. It should be installed independently. Not managed by kubernetes.  
+    - Docker
+    - rkt
+    - runc
+    - cri-o
+
+  2. kubelet - runs on each node in the cluster or can say kubernetes agent. It watches for tasks sent from the API Server, executes the task, and reports back to the Master.
+  Schedules container or process on the docker. It is a interface between container and node(machine). Responsible for starting a pod with a container inside and assigning resources from the node to the container like cpu, ram and diskspace.  
+
+  3. Kube proxy - makes sure that each node gets its IP address. It runs on each worker node.
+  If forwards the requests from services to pods.  It has intelligent inside which make sure the it forwards request to container inside node, instead of randomly forwarding to any replica set inside a cluster to prevent network overhead. Also, lets communicate between containers within nodes or across without needed to go through API server.
+
+  - Add-ons
+    - coreDNS
+    - cni (Networking)
+      - flannel
+      - weave
+      - caliio
+
+  - A pod -  is the smallest element of scheduling in Kubernetes. Without it, a container cannot be part of a cluster.
+
+## How does all the component interact with the cluster?
+- schedule pod?
+- monitor?
+- re-schedule/re-start pod?
+- join a new node?
+
+  - All these are managed through master nodes
+    - It has 4 processes running
+      - api server - cluster gateway, gate keep for authentication, validation, LB across master nodes.
+      - controller - Detect state changes and send request to scheduler
+      - scheduler - where to put the pod, and send request to kubelet to create pods.
+      - etcd(brain) - every change in a cluster are saved and updated in key value pair.
+        - schedule get what resources are available from etcd
+        - controller gets state update from etcd
+        - api queries state information from etc or makes queries to update the state.
+        - actual application data is not stored in etcd. Distributed storage across master nodes.
+        - etcd talks using RAFT protocol
+          - distributed, consensus, Protocol
+
+
+
+
+
 
 ## Services (What is it?) - Internal Service
 - One of the best features kubernetes offers is that non-functioning pods get replaced by new ones automatically. The new pods have a different set of IPs. It can lead to processing issues and IP churn as the IPs no longer match. If left unattended, this property would make pods highly unreliable.
@@ -308,6 +349,138 @@ spec:
 # Entrypoint
 - Ingress Controller is the entrypoint
 - Domain should be provisioned to point to Ingress IP address(ATT, route53 or internal DNS server)
+
+# Persistent Volumes
+- storage that doesn't depend on pod lifecycle
+- storage must be available to all nodes
+- Storage needs to survive even if cluster crashes
+- Kubernetes doesn't give you persistent storage out of the box. You need to configure yourself.
+
+1. Persistent Volume - Just a abstract component, it must take the storage from actual physical storage, external or NFS or local Disk.  Plugins to a cluster.
+2. Persistent Volume Claim - abstract component to connect with the Persistent volume and Pods. Must exist in same ns as pod
+3. Storage Class - another abstraction layer. Provisions Persistent Volumes dynamically when persistentVolumeClaims it
+
+- Storage spec will differ between different types of storage.
+- are not namespace and is available to the cluster.
+- local vs Remote
+  - always use remote storage for persistent
+
+
+```
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-name
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: Slow
+  mountOptions:
+    - hard
+    - nfsvers=4.0
+  nfs:
+    path: /dir/path/on/nfs/server
+    server: nfs-server-ip-address   
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-name
+spec:
+  storageClassName: manual
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+    - name: myfrontend
+      image: nginx
+      volumeMounts:                 # Volume is mounted on to the container
+      - mountPath: "/var/www/html"
+        name: mypd
+  volumes:                          # Volume is mounted on to the pod
+    - name: mypd
+      persistentVolumeClaim:
+        claimName: pvc-name
+
+--- Generated automatically
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-name
+provisioner: kubernetes.io/aws-ebs # internal provisioner
+parameters:
+  type: io1
+  iopsPerGB: "10"
+  fsType: ext4
+```
+
+- configMap volume type
+  - local volumes
+  - need to mount to pod and container same way as PV
+- secret volume type
+  - local volumes
+  - need to mount to pod and container same way as PV
+
+  - Pods can use multiple volumes simultaneously
+
+
+
+# What is a namespace in Kubernetes
+- In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. Namespace-based scoping is applicable only for namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide objects (e.g. StorageClass, Nodes, PersistentVolumes, etc).
+- There are thee namespaces created by kubernetes
+  1. default, by default you can deploy components to it.  
+  2. kube-system, It is the Namespace for objects created by Kubernetes systems/control plane.
+  3. kube-public, Namespace for resources that are publicly readable by all users. This namespace is generally reserved for cluster usage.
+
+# yaml explained
+- Every configuration file in kubernetes has three parts
+  1. metadata
+    - has name of the component itself
+    -
+  2. specification
+    - attributes will be specific to the kind of the component
+  3. Where is the third part in a configuration?
+  - Status
+    - status is automatically generated by kubernetes
+    - It compares Desired state to actual state
+    - This information is fetched from etcd
+    - It updates the state continuously
+
+- First two lines are what you want to create and which api version to use for each component
+
+- Template, call Pods blueprint
+  - has it's own metadata and spec
+  - configuration inside a configuration
+  - this configuration applies to a pod
+  - spec inside template is the blueprint of pod, like which image, which port and name of the container
+
+- Connectors, through Labels and Selectors
+  - metadata part contains labels
+  - specification part contains selectors
+  - pods get the label through the template blueprint, and this label is matched by the selector
+    ```
+    selector:
+      matchLabels:
+        app: nginx
+    ```
+  - Means, match all the labels with app: nginx in a deployment to create the connections
+- Deployment has its own label, this label is mapped by the selector in service to establish the connections between deployment and service components.
+
+
 
 
 # Docker Swarm
