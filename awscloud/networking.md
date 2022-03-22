@@ -20,6 +20,7 @@
 Public subnet will have igw association
 
 3. Private RT
+
 |Destination|Target|Comment|
 |---|---|---|
 |10.10.0.0/16|local|routed within VPC|
