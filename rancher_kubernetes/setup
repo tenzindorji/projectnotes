@@ -1,0 +1,163 @@
+
+Skip to end of metadata
+Created by Dorji, Tenzin, last modified just a moment ago
+Go to start of metadata
+1. What is Rancher
+Rancher is a software product to manage Kubernetes clusters. This includes not only managing existing clusters, but building new clusters as well.
+
+For more details, always refer to official page documentation:  https://rancher.com/docs/rancher/v2.6/en/
+
+2. Prerequisite
+K3s
+Docker
+two virtual machine for k3s and Rancher
+
+**Note** Do not install Rancher on K3s server
+
+3.  Servers (These are not meant for any live application and might get nuked anytime)
+K3s	server
+Rancher	server
+4. Setup
+Rancher can be installed using docker or helm. For our demo purpose, we will be using docker
+
+4.1.  Install docker on the rancher and K3 servers
+```
+#ssh to both rancher and k3s sever and install docker
+
+#Clean up docker if any
+yum list installed|grep -i docker
+#Example remove all the docker repo as show below
+yum remove docker-client.x86_64 docker-common.x86_64 docker-rhel-push-plugin.x86_64
+
+#Install docker as root user(sudo)
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli containerd.io
+sudo systemctl enable --now docker.service
+sudo systemctl status docker
+docker version
+docker run hello-world
+```
+
+4.2.  Install K3s
+```
+# On k3s server, run below command to install k3s(kubernetes)
+curl -sfL https://get.k3s.io | sh -
+
+k3s kubectl get node
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+kubectl get nodes
+```
+4.3.  Install Rancher
+Refer to rancher documentation: https://rancher.com/docs/rancher/v2.6/en/quick-start-guide/deployment/quickstart-manual-setup/
+
+`docker run -d --restart=unless-stopped -p 80:80 -p 443:443 --privileged rancher/rancher:latest`
+
+# Follow the instruction on the rancher landing page for initial setup by accessing rancher server after rancher container is created
+Example: https://rancher_server
+```
+docker ps # fetch the rancher container ID
+
+docker logs <rancher_container_id>|grep Password
+```
+
+4.4.  Export existing kubernetes(k3s) cluster to Rancher
+From Rancher dashboard,  Click on "Import Existing" → "Generic"
+Provide Cluster Name and click create , it only excepts lower_case naming
+Run third option on the K3s server
+example:
+
+ssh to K3s server
+sudo su
+curl --insecure -sfL https://rancher_server/v3/import/m5rwt828btm75bst6769gnf4tc892fgjn22c2v4kf94cdm69bdfq87_c-m-xlxdgltw.yaml | kubectl apply -f -
+
+
+5.  Create new namespace or use default namespace
+ Create new namespace by clicking on the newly exported cluster and then click on "Project/Namespaces" under Cluster at left side panel
+ On "Project: Default" panel, Click on "Create Namespace"  which is at right side.
+ Provide namespace name, example prod, dev, uat and leave everything default and then click create.
+on the K3s server, run be command to validate the namespace just created
+```
+ssh to k3_server
+sudo su
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml #if ssh session is closed
+kubectl get namespace
+```
+
+
+6. Deploy app using Rancher UI
+ Create Deployment under Workload → Deployments --> Create
+
+# Example:
+Namespace: platform-dev #select from top panel dropdown
+Name: myapp
+Replicas: 2
+
+# Under General
+Image: rancher/hello-world # you can provide your own image here
+# Click AddPort
+Select Service type:
+    Do not create a service # if you select this, you will need to create service, below option will create service automatically.
+    ClusterIP
+    NodePort
+    LoadBalancer
+Next, Create ingress (important) which is under **Service Discovery** drop down on left panel , select Ingresses and click "Create"
+#Example
+Name: myapp-ingress
+Prefix: /myapp #path base routing
+Target Service: Select Appropriate Service Name
+Port:  Service port, this should be auto filled after selecting service name(service port)
+
+# If service name is not getting listed under Target Service, create service by following step 9. This is due to "do not create service" option during deployment creation
+Create service, under Service Discovery → Services → Create → ClusterIP
+Name: myapp-service
+Listening Port: service port which will be exposed to ingress(can be anything)
+Target Port: Pod port/Deployment Port/Container Port
+Selectors: Get the key value selector name from deployment yaml
+Example: workload.user.cattle.io/workloadselector=apps.deployment-platform-dev-nginx
+
+
+You can access your app using kubernetes server IP, example: http://k3_server.com or http://k3s_server.com/myapp
+Also, you can check pod status by running kubectl cli on kubernetes servers
+```
+ssh to k3s server
+sudo su
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+kubectl get po -n platform-dev
+kubectl get po # for default namespace
+
+kubectl logs -f <pod_id> -n platform-dev # to check the logs
+```
+
+
+7. Deploy app using kubectl
+Kubernetes components can be deploy/update/remove using kubectl CLI. Example:
+
+`kubectl apply -f <component yaml> -n <name_space>`
+
+
+8. Cleanup from UI
+Deployment cleanup, delete deployment from workload, also delete ingress and service from Rancher UI
+Remove Rancher
+#On rancher server:
+```
+docker ps
+docker stop <rancher_container_id>
+docker rm <rancher_container_id>
+docker rmi <rancher_image>
+docker volume prune
+```
+
+Uninstall k3s
+#On K3s server
+```
+/usr/local/bin/k3s-uninstall.sh
+```
+
+
+Remove docker on k3s and Rancher server
+```
+yum list installed | grep -i docker
+#Example remove all the docker repo as show below
+yum remove docker-client.x86_64 docker-common.x86_64 docker-rhel-push-plugin.x86_64
+
+```
