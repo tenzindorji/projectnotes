@@ -3,14 +3,14 @@
 ## what is Routing Table
 
 1. Default OR Main RT
-  - Automatically created for you.
-  - Has cidr block and target is local
-  - It is private by default
-  - lets say default cidr is 10.10.0.0/16
-  - It can be assigned to any subnet in VPC
-  - each subnet in VPC must be associated with one RT, otherwise is associated with default RT
-  - subnet can only associate one RT at a time, but RT can be associated with more than one subnet.
-  - local route - communication within VPC
+    - Automatically created for you.
+    - Has cidr block and target is local
+    - It is private by default
+    - lets say default cidr is 10.10.0.0/16
+    - It can be assigned to any subnet in VPC
+    - each subnet in VPC must be associated with one RT, otherwise is associated with default RT
+    - subnet can only associate one RT at a time, but RT can be associated with more than one subnet.
+    - local route - communication within VPC
 
 2. Public RT
   ```
