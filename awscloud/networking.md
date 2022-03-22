@@ -20,13 +20,13 @@
 Public subnet will have igw association
 
 3. Private RT
-|Destination|Target|Comments|
+|Destination|Target|Comment|
 |---|---|---|
 |10.10.0.0/16|local|routed within VPC|
 |0.0.0.0/0|nat-id|routed to internet to any IP address|
 |172.68.0.0/16|vgw|virtual private gateway through VPN to customer gateway in corporate network, connected to on perm network|
 |172.31.0.0/16|pcx-*|VPC peering connection|
-|tightening the rules(allow/deny)|More general|
+|tightening the rules(allow/deny)|More general||
 
   - Private subnet has NAT(Network address Translation) to connect with internet but has no IGW association.
   - Disable *Source/Destination Checking* for NAT instances. It is on by default, to prevent from man in middle attack
@@ -45,7 +45,7 @@ You can access your instance using bastion host hosted in public subnet and has 
 - **By default it allows inbound outbound traffic** but custom NACL rules by default has denied inbound and outbound rules.
 - Each subnet should be associated with one NACL, else default will be associated
 - You can associate NACL with multiple subnets but subnet can be associated with only one NACL at a time.
-- stateless - which means that responses to allow inbound traffic are subjected to the rules for outbound traffic (and vice versa)
+- stateless - which means that responses to allow inbound traffic are subjected to the rules for outbound traffic (and vice versa). Return traffic must be explicitly allowed by rules.
 
 - Components of NACL
   1. Rule Number - Rules are match as per the priority, if found, it doesn't proceed further.
@@ -70,5 +70,14 @@ You can access your instance using bastion host hosted in public subnet and has 
   - you can assign upto 5 SG
   - can only allow rules
   - stateful - if we send a request from our instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules. Responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules.
-  - by default, it has no inbound rules.
+  - by default, it has no inbound rules. Return traffic is automatically allow, regardless of any rules.
   - instances associated with a security group can't talk to each other unless you allow it.
+
+## Difference between SG and NACL
+|SG|NACL|
+|---|---|
+|operates at the instance level|Operates at subnet level|
+|supports allow rules only|supports allow and deny rules|
+|stateful|stateless|
+|evaluate all rules before deciding whether to allow traffic|Process rules in order|
+|applies to an instance only|Automatically applies to all instances in the subnet|
