@@ -61,8 +61,17 @@ OR `curl -sfL https://get.k3s.io  | INSTALL_K3S_VERSION=v1.21.9+k3s1 sh -`\
 - Now we have one node k3s cluster
 - set kubeconfig\
 ` export KUBECONFIG=/etc/rancher/k3s/k3s.yaml`\
+  ```
+  vi ~/.bashrc
+    export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+    k=kubectl
+    alias k=kubectl
+  ```
+  `source ~/.bashrc`
+  
+`k version --short`
 `kubectl get nodes`\
-`kubectl get pods --all-namespaces`
+`k get pods --all-namespaces`
 
 - Unstall k3s
 `/usr/local/bin/k3s-uninstall.sh`

@@ -364,6 +364,7 @@ spec:
 - are not namespace and is available to the cluster.
 - local vs Remote
   - always use remote storage for persistent
+  - serviceAccount is mounted on `/var/run/secrets/kubernetes.io/serviceaccount` local mount
 
 
 ```
@@ -428,16 +429,238 @@ parameters:
   fsType: ext4
 ```
 
-- configMap volume type
-  - local volumes
-  - need to mount to pod and container same way as PV
-- secret volume type
-  - local volumes
-  - need to mount to pod and container same way as PV
+## configMap, Secrets
+  - configMap volume type
+    - local volumes
+    - need to mount to pod and container same way as PV
+  - secret volume type
+    - local volumes
+    - need to mount to pod and container same way as PV
 
-  - Pods can use multiple volumes simultaneously
+    - Pods can use multiple volumes simultaneously
 
+## ServiceAccounts
+  - Kubernetes has can't create users/groups. It needs to be managed externally.
+  - But, serviceaccount can be defined/created by kubernetes API and is created in namespace.
+  - By Default, service account is created in each namespace but has no access to API server
+  - Create your own service account
+    - use it in a RoleBinding or ClusterRoleBinding
+    - use the service account secret to obtain the authentication token and CA certificate
+    - service account gets kubernetes secret automatically and located as shown below on each container in a cluster
+      ```
+      kubectl run -it --rm alpine --image=alpine -- sh #once the session is close, container is deleted.
+      cd /var/run/secrets/kubernetes.io/serviceaccount/
+      ls -1
+      ca.crt  # validate tls connection to the kubernetes api end. like curl https://
+      namespace
+      token #jwt token, base 64 encoded, authenticate to the cluster as default service account. try decoding it using jwt <tokencontent>. It has cluster information, namespace and so on
+      ```
 
+      `npm install -g jwt-cli`
+
+    - create service account:
+      ```
+      kubectl create serviceaccount platform-demo --dry-run=client -o yaml
+      kubectl get secret # there are three pieces of data, lets look into it, ca.crt, token and namespace.
+      kubectl get secret platform-demo-token-q9qr7 -o yaml
+      echo <token_content> | base64 -d # decode the token
+      jwt <decoded_token> # you will get payload information
+      ```
+
+    - playload information example:
+      ```
+      {
+    "iss": "kubernetes/serviceaccount",
+    "kubernetes.io/serviceaccount/namespace": "default",
+    "kubernetes.io/serviceaccount/secret.name": "platform-demo-token-q9qr7",
+    "kubernetes.io/serviceaccount/service-account.name": "platform-demo",
+    "kubernetes.io/serviceaccount/service-account.uid": "8e044aa0-1ce7-4cbf-bbe3-b42ef69bedbe",
+    "sub": "system:serviceaccount:default:platform-demo"
+      ```
+
+  - Use ServiceAccount in a deployment
+    ```
+    template:
+      metadata
+      ..
+      spec:
+        serviceAccountName: platform-demo
+        containers:
+          - name: apline
+            image: apline-curl
+            command:
+              - "sh"
+              - "-c"
+              - "sleep 10000"
+
+    ```
+
+  - ssh to alpine pod container created about
+    `kubectl exec -it <pod_id> -- sh`
+
+  - now use ca.crt and token to access the alpine app over curl
+    ```
+    /run/secrets/kubernetes.io/serviceaccount # CA=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    /run/secrets/kubernetes.io/serviceaccount # curl --cacert $CA -X GET https://kubernetes/api
+    {
+      "kind": "Status",
+      "apiVersion": "v1",
+      "metadata": {
+
+      },
+      "status": "Failure",
+      "message": "Unauthorized",
+      "reason": "Unauthorized",
+      "code": 401
+
+      ## Need to authorized using jwt token
+
+    /run/secrets/kubernetes.io/serviceaccount # TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+    /run/secrets/kubernetes.io/serviceaccount # curl --cacert $CA -X GET https://kubernetes/api --header "Authorization: Bearer $TOKEN"
+    {
+      "kind": "APIVersions",
+      "versions": [
+        "v1"
+      ],
+      "serverAddressByClientCIDRs": [
+        {
+          "clientCIDR": "0.0.0.0/0",
+          "serverAddress": "142.136.156.145:6443"
+        }
+      ]
+
+    /run/secrets/kubernetes.io/serviceaccount # curl -X GET https://kubernetes/api --header "Authorization: Bearer $TOKEN"
+    curl: (60) SSL certificate problem: unable to get local issuer certificate
+    More details here: https://curl.haxx.se/docs/sslcerts.html
+
+    curl failed to verify the legitimacy of the server and therefore could not
+    establish a secure connection to it. To learn more about this situation and
+    how to fix it, please visit the web page mentioned above.
+    /run/secrets/kubernetes.io/serviceaccount # curl -X GET https://kubernetes/api --header "Authorization: Bearer $TOKEN" --insecure
+    {
+      "kind": "APIVersions",
+      "versions": [
+        "v1"
+      ],
+      "serverAddressByClientCIDRs": [
+        {
+          "clientCIDR": "0.0.0.0/0",
+          "serverAddress": "142.136.156.145:6443"
+        }
+      ]
+    }/run/secrets/kubernetes.io/serviceaccount #
+
+    ```
+
+  **More On service account**
+  - Secure access to API server
+    - Authentication via plugins
+      - Client Certificates - most common
+      - Authentication token - mostly used for serviceaccount(jwt, java web token)
+      - Basic HTTP - Not recommended
+      - OpenID Connect - Azure
+    - Authorization (permission to perform certain task)
+    - Admission control (webhooks)
+  - Type of users
+    - Person
+    - Application
+
+- Create role
+  ```
+  k create role podlister --verb=list --resource=pods --dry-run=client -o yaml
+  k create role podlister --verd=list --resource=pods
+  k create rolebinding podlisterrolebinding --serviceaccount=default:platform-demo --role podlister --dry-run=client -o yaml
+  k create rolebinding podlisterrolebinding --serviceaccount=default:platform-demo --role podlister
+  ```
+
+    ```
+    k exec -it apline-serviceaccount-deployment-5f976c7b64-cj9vw -- sh
+
+    / # CA=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    / # TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+    / # curl --cacert $CA -X GET https://kubernetes/api/v1/namespaces/default/pods --header "Authorization: Bearer $TOKEN"| head -n 20
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                     Dload  Upload   Total   Spent    Left  Speed
+      0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0{
+      "kind": "PodList",
+      "apiVersion": "v1",
+      "metadata": {
+        "resourceVersion": "976596"
+      },
+      "items": [
+        {
+          "metadata": {
+            "name": "mongodb-deployment-555cdf5fdf-rw6r4",
+            "generateName": "mongodb-deployment-555cdf5fdf-",
+            "namespace": "default",
+            "uid": "3b562343-b60f-4b28-9b60-45517b2651b0",
+            "resourceVersion": "466349",
+            "creationTimestamp": "2022-03-19T00:20:07Z",
+            "labels": {
+              "app": "mongodb",
+              "pod-template-hash": "555cdf5fdf"
+            },
+            "ownerReferences": [
+    100  8493    0  8493    0     0  1184k      0 --:--:-- --:--:-- --:--:-- 1184k
+    curl: (23) Failed writing body (0 != 5930)
+
+    ```
+
+# RBAC - Role base access control
+ - user should have , key pair (.key and .crt) and .csr (ceriticaet signing request)
+ - kubernetes master have Certificate Authority ca.key and ca.crt
+ - role gives access to particular namespace
+
+ - role applies to only particular namespace
+ - clusterrole applies to entire cluster
+
+ - k3s server certificates are located under `/var/lib/rancher/k3s/server/tls`
+ - k8s server certificates are located under `/etc/kubernetes/pki`
+
+ - When you create a role, you need to define *rules*
+  1. apiGroups
+    - core api group
+    - extensions
+    - apps
+    - networking
+  2. resources
+    - pods
+    - deployments
+    - replicasets
+  3. verbs(action) - what user can do
+    - get, list, watch, update, delete
+
+ - Demo
+  - create user certificates:
+    ```
+    openssl genrsa -out john.key 2048 # create use private key
+    openssl req -new -key john.key -out john.csr -subj "/CN=john/O=platform-prod" # create user certificate signing request, platform-prod is a namespace
+
+    # Generate user certificate signed by kubernetes CA
+    openssl x509 -req -in john.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out john.crt -days 365 # k8s
+    openssl x509 -req -in john.csr -CA /var/lib/rancher/k3s/server/tls/server-ca.crt -CAkey /var/lib/rancher/k3s/server/tls/server-ca.key -CAcreateserial -out john.crt -days 365 #k3s
+
+    --
+    ateserial -out john.crt -days 365
+    Signature ok
+    subject=/CN=john/O=platform-prod
+    Getting CA Private Key
+    ```
+  - Now share  .key, .csr and .crt to user so user can configure kubeconfig himself
+    ```
+    kubectl --kubeconfig john.kubeconfig config set-cluster kubernetes --server https://<kubernetes_master>:6443 --certificate-authority=ca.crt
+
+    k config view
+    kubectl --kubeconfig john.kubeconfig config set-cluster kubernetes --server https://127.0.0.1:6443 --certificate-authority=/var/lib/rancher/k3s/server/tls/server-ca.crt #setting up new cluster kubernetes in kubeconfig
+      Cluster "kubernetes" set.
+
+    # add user to kubeconfig
+    k --kubeconfig john.kubeconfig config set-credentials john --client-certificate john.crt --client-key john.key
+    User "john" set.
+
+    # set context for user
+    k --kubeconfig john.kubeconfig config set-context john-kubernetes --cluster kubernetes --namespace platform-prod --user john  
+    ```
 
 # What is a namespace in Kubernetes
 - In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. Namespace-based scoping is applicable only for namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide objects (e.g. StorageClass, Nodes, PersistentVolumes, etc).
@@ -480,6 +703,24 @@ parameters:
   - Means, match all the labels with app: nginx in a deployment to create the connections
 - Deployment has its own label, this label is mapped by the selector in service to establish the connections between deployment and service components.
 
+
+## Jobs and Cronjobs
+
+## multi-container Pod (sidecar, init, others)
+
+## Deployment strategies
+  - blue/green
+  - canary
+  - rolling updates
+
+## API Depreciation
+
+## Health checks
+  - readiness probes
+  - liveliness probes
+
+## container logs
+## debugging in Kubernetes
 
 
 

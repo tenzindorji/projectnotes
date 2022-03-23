@@ -147,8 +147,8 @@ It redirects stdout and stderr to nohup.out
 uptime
 top
   ```
-  
-  
+
+
 - Kill hung Chef process:
 ```
 sudo ps -ef|awk '/chef/ {print $2}'|xargs -n1 -I% bash -c "sudo kill -9 %"
@@ -164,11 +164,11 @@ perl -p -i -e 's/\R//g;' filename
 =iferror(VLOOKUP(A64,Sheet33!$A$1:$C$264,3,False),0)
 ```
 ```
-=VLOOKUP(B2,$A$2:$A$20,1,FALSE) 
+=VLOOKUP(B2,$A$2:$A$20,1,FALSE)
 B2 is the value to find
-$A$2:$A$20 is the range to find the value 
+$A$2:$A$20 is the range to find the value
 1, is the column number whever to value has been lookedup
-FALSE, extact match turned off 
+FALSE, extact match turned off
 ```
 
 # Virutal Memory
@@ -357,7 +357,7 @@ Process and thread:
 # NTP Server (Network time protocol)
 * ntpq -p # reachability statistics -
 
-# What is soft and hard limit 
+# What is soft and hard limit
 - soft limit are not enforced, they influence reclaim under memory pressure, Process using highest soft limit momery is terminated
 - Hard limit, when any process goes above memory hard limit, Out Of Memory, that process is killed
 # How can you limit process memory usage?
@@ -643,9 +643,11 @@ openssl rsa -in file.pem
 echo | openssl s_client -servername uat-epccss.example.com -connect uat-epccss.example.com:443 2>/dev/null | openssl x509 -noout -dates
 ##get metadata (DNS name, SAN and expiration)
 openssl x509 -text -noout -in file.pem
-         
-```
 
+```
+- .csr - certificate signing request
+- .crt - certificate
+- .key private key (crt and key are key pair)
 
 # OSI and TCP/IP Models - PDU
 ||OSI|TCP/IP|Protocol Data Unit|Devices|Protocols|
@@ -781,7 +783,7 @@ Here is the command to dump gc collection from live java process\
 
 # Difference between paging and swapping
 
-# Scan vulnerable jar files 
+# Scan vulnerable jar files
 ```
 zip -v 2> /dev/null 1> /dev/null; isZip=$?; jars=$( (ls -l /proc/*/fd | grep -Eo '\S+jar' | grep -v "jdk|jre") 2> /dev/null); for i in $jars ; do var=$(echo $i | grep -i "log4j.*jar") 2> /dev/null; if [ ! -z "$var" ]; then echo $i; else if [ "$isZip" -eq 0 ]; then (zip -sf $i | grep -i "log4j.*jar") 2> /dev/null; else (jar -tf $i | grep -i "log4j.*jar") 2> /dev/null; fi; fi; done;
 ```
