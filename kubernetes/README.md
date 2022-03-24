@@ -441,6 +441,7 @@ parameters:
 
 ## ServiceAccounts
   - Kubernetes has can't create users/groups. It needs to be managed externally.
+  - ca, certificaet Authority is the brain of trust in Kubernetes
   - But, serviceaccount can be defined/created by kubernetes API and is created in namespace.
   - By Default, service account is created in each namespace but has no access to API server
   - Create your own service account
@@ -565,7 +566,10 @@ parameters:
     - Person
     - Application
 
-- Create role
+- Create role and rolebinding
+  - ClusterRoleBinding - cluster level
+  - RoleBinding - limited to namespace
+
   ```
   k create role podlister --verb=list --resource=pods --dry-run=client -o yaml
   k create role podlister --verd=list --resource=pods
@@ -609,13 +613,12 @@ parameters:
 # RBAC - Role base access control
  - user should have , key pair (.key and .crt) and .csr (ceriticaet signing request)
  - kubernetes master have Certificate Authority ca.key and ca.crt
- - role gives access to particular namespace
 
  - role applies to only particular namespace
  - clusterrole applies to entire cluster
 
- - k3s server certificates are located under `/var/lib/rancher/k3s/server/tls`
- - k8s server certificates are located under `/etc/kubernetes/pki`
+ - k3s CA certificates are located under `/var/lib/rancher/k3s/server/tls/client-ca.*`
+ - k8s and minikube CA certificates are located under `/etc/kubernetes/pki/ca.*`
 
  - When you create a role, you need to define *rules*
   1. apiGroups
@@ -623,7 +626,7 @@ parameters:
     - extensions
     - apps
     - networking
-  2. resources
+  2. resources(noun)
     - pods
     - deployments
     - replicasets
@@ -636,9 +639,9 @@ parameters:
     openssl genrsa -out john.key 2048 # create use private key
     openssl req -new -key john.key -out john.csr -subj "/CN=john/O=platform-prod" # create user certificate signing request, platform-prod is a namespace
 
-    # Generate user certificate signed by kubernetes CA
+    # Generate user .crt signed by kubernetes CA certificate authority, this action should be performed by Admin/kubernetes.
     openssl x509 -req -in john.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out john.crt -days 365 # k8s
-    openssl x509 -req -in john.csr -CA /var/lib/rancher/k3s/server/tls/server-ca.crt -CAkey /var/lib/rancher/k3s/server/tls/server-ca.key -CAcreateserial -out john.crt -days 365 #k3s
+    openssl x509 -req -in john.csr -CA /var/lib/rancher/k3s/server/tls/client-ca.crt -CAkey /var/lib/rancher/k3s/server/tls/client-ca.key -CAcreateserial -out john.crt -days 365 #k3s
 
     --
     ateserial -out john.crt -days 365
@@ -646,12 +649,17 @@ parameters:
     subject=/CN=john/O=platform-prod
     Getting CA Private Key
     ```
-  - Now share  .key, .csr and .crt to user so user can configure kubeconfig himself
-    ```
-    kubectl --kubeconfig john.kubeconfig config set-cluster kubernetes --server https://<kubernetes_master>:6443 --certificate-authority=ca.crt
 
-    k config view
-    kubectl --kubeconfig john.kubeconfig config set-cluster kubernetes --server https://127.0.0.1:6443 --certificate-authority=/var/lib/rancher/k3s/server/tls/server-ca.crt #setting up new cluster kubernetes in kubeconfig
+  - Now share .csr and CA to user so user can configure kubeconfig himself, or admin can configure and share the kubeconfig to user
+
+  - Configure Kubeconfig manually:
+
+    ```
+    k config view # get cluster name and ip address
+
+    kubectl --kubeconfig john.kubeconfig config set-cluster kubernetes --server https://<kubernetes_master>:6443 --certificate-authority=ca.crt #k8s
+
+    kubectl --kubeconfig john.kubeconfig config set-cluster default --server https://127.0.0.1:6443 --certificate-authority=/var/lib/rancher/k3s/server/tls/client-ca.crt #setting up new cluster kubernetes in kubeconfig # k3s
       Cluster "kubernetes" set.
 
     # add user to kubeconfig
@@ -660,6 +668,88 @@ parameters:
 
     # set context for user
     k --kubeconfig john.kubeconfig config set-context john-kubernetes --cluster kubernetes --namespace platform-prod --user john  
+    ```
+
+   **output keys with base64 without line break/wrapping**
+    ```
+    cat john.crt|base64 -w0
+    cat john.key|base64 -w0
+    ```
+
+  - OR copy ~/.kube/config john.kubeconfig  OR  cp /etc/rancher/k3s/k3s.yaml john.kubeconfig and edit the file
+
+    ```
+    apiVersion: v1
+    clusters:
+    - cluster:
+        certificate-authority-data:  <leave as it is, this is ca.crt>
+        server: https://127.0.0.1:6443
+      name: default
+    contexts:
+    - context:
+        cluster: default
+        user: <username>
+        namespace: default
+      name: default
+    current-context: default
+    kind: Config
+    preferences: {}
+    users:
+    - name: <username>
+      user:
+        client-certificate-data:  <base64 -w0 user.crt>
+        client-key-data: <base64 -w0 user.key>
+    ```
+
+  - Create role
+    `k create role readonlyuser --verb=get,list --resource=pods --namespace=default`
+
+    ```
+    k get role readonlyuser -o yaml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      creationTimestamp: "2022-03-24T03:46:22Z"
+      name: readonlyuser
+      namespace: default
+      resourceVersion: "1031108"
+      uid: 35b79bff-bcdc-41f3-90e9-fcda69e8978e
+    rules:
+    - apiGroups:
+      - '*'
+      resources:
+      - pods
+      verbs:
+      - get
+      - list
+
+    ```
+  - bind role to the user
+    `k create rolebinding readonlyrolebinding --role=readonlyuser --user=john --namespace=default`
+
+    ```
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      creationTimestamp: "2022-03-24T03:49:02Z"
+      name: readonlyrolebinding
+      namespace: default
+      resourceVersion: "1030777"
+      uid: a28dc645-2dda-4fe1-9036-353ae9b3df2c
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: readonlyuser
+    subjects:
+    - apiGroup: rbac.authorization.k8s.io
+      kind: User
+      name: john
+
+    ```
+  - Group
+    - To avoid rolebinding user list from growing, use Kind: group
+    ```
+     k create rolebinding groupbinding --role=readonlyuser --group=usergroup -n <namespace>
     ```
 
 # What is a namespace in Kubernetes
