@@ -470,13 +470,12 @@ parameters:
 
     - playload information example:
       ```
-      {
-    "iss": "kubernetes/serviceaccount",
-    "kubernetes.io/serviceaccount/namespace": "default",
-    "kubernetes.io/serviceaccount/secret.name": "platform-demo-token-q9qr7",
-    "kubernetes.io/serviceaccount/service-account.name": "platform-demo",
-    "kubernetes.io/serviceaccount/service-account.uid": "8e044aa0-1ce7-4cbf-bbe3-b42ef69bedbe",
-    "sub": "system:serviceaccount:default:platform-demo"
+      "iss": "kubernetes/serviceaccount",
+      "kubernetes.io/serviceaccount/namespace": "default",
+      "kubernetes.io/serviceaccount/secret.name": "platform-demo-token-q9qr7",
+      "kubernetes.io/serviceaccount/service-account.name": "platform-demo",
+      "kubernetes.io/serviceaccount/service-account.uid": "8e044aa0-1ce7-4cbf-bbe3-b42ef69bedbe",
+      "sub": "system:serviceaccount:default:platform-demo"
       ```
 
   - Use ServiceAccount in a deployment
