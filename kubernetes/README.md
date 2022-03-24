@@ -557,7 +557,7 @@ parameters:
   - Secure access to API server
     - Authentication via plugins
       - Client Certificates - most common
-      - Authentication token - mostly used for serviceaccount(jwt, java web token)
+      - Authentication token - mostly used for serviceaccount(jwt, json web token)
       - Basic HTTP - Not recommended
       - OpenID Connect - Azure
     - Authorization (permission to perform certain task)
@@ -652,7 +652,7 @@ parameters:
 
   - Now share .csr and CA to user so user can configure kubeconfig himself, or admin can configure and share the kubeconfig to user
 
-  - Configure Kubeconfig manually:
+  - using user certificate .key and .crt, generate user Kubeconfig manually, lets say create user.
 
     ```
     k config view # get cluster name and ip address
@@ -719,12 +719,14 @@ parameters:
       - '*'
       resources:
       - pods
+      - *
       verbs:
       - get
       - list
+      - *
 
     ```
-  - bind role to the user
+  -  Rolebinding - bind role to the user
     `k create rolebinding readonlyrolebinding --role=readonlyuser --user=john --namespace=default`
 
     ```
@@ -746,11 +748,19 @@ parameters:
       name: john
 
     ```
-  - Group
+  - **Group**
     - To avoid rolebinding user list from growing, use Kind: group
-    ```
-     k create rolebinding groupbinding --role=readonlyuser --group=usergroup -n <namespace>
-    ```
+    - **How do you list user in a group**?
+      - You cannot.  group name is created during user certificate signing request, /O=<groupname>
+        `-subj "/CN=john/O=platform-prod"`\
+        **CN:** This will be set as username
+        **O:** Org name. This is actually used as a group by kubernetes while authenticating/authorizing users. You could add as many as you need\
+        `openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=dev/O=example.org"`\
+        `openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=default"`
+
+    - Bind group and role:
+     `k create rolebinding groupbinding --role=readonlyuser --group=<groupname, should be same as certificate subj /O=<groupname>> -n <namespace>`
+
 
 # What is a namespace in Kubernetes
 - In Kubernetes, namespaces provides a mechanism for isolating groups of resources within a single cluster. Names of resources need to be unique within a namespace, but not across namespaces. Namespace-based scoping is applicable only for namespaced objects (e.g. Deployments, Services, etc) and not for cluster-wide objects (e.g. StorageClass, Nodes, PersistentVolumes, etc).
