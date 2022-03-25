@@ -439,11 +439,21 @@ parameters:
 
     - Pods can use multiple volumes simultaneously
 
+
+**Two types of user in Kubernetes**
+- ServiceAccounts
+- Normal Users
+  - Static password file
+  - OpenID Connect Tokens
+  - x509 certificate
+  - webhook
+
 ## ServiceAccounts
   - Kubernetes has can't create users/groups. It needs to be managed externally.
   - ca, certificaet Authority is the brain of trust in Kubernetes
   - But, serviceaccount can be defined/created by kubernetes API and is created in namespace.
   - By Default, service account is created in each namespace but has no access to API server
+  - External application gets kubernetes access using serviceaccounts. Like Prometheus, appd, splunk or DB
   - Create your own service account
     - use it in a RoleBinding or ClusterRoleBinding
     - use the service account secret to obtain the authentication token and CA certificate
@@ -454,7 +464,7 @@ parameters:
       ls -1
       ca.crt  # validate tls connection to the kubernetes api end. like curl https://
       namespace
-      token #jwt token, base 64 encoded, authenticate to the cluster as default service account. try decoding it using jwt <tokencontent>. It has cluster information, namespace and so on
+      token #jwt token, base 64 encoded, authenticate to the cluster as default service account. try decoding it using jwt <tokencontent>. It has cluster information, namespace and so on. It is signed by API server already.
       ```
 
       `npm install -g jwt-cli`
@@ -498,8 +508,12 @@ parameters:
   - ssh to alpine pod container created about
     `kubectl exec -it <pod_id> -- sh`
 
+  - Wht https://kubernetes?
+    `k get svc` # It is a default service entry point to API server in default name space.
+
   - now use ca.crt and token to access the alpine app over curl
     ```
+
     /run/secrets/kubernetes.io/serviceaccount # CA=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     /run/secrets/kubernetes.io/serviceaccount # curl --cacert $CA -X GET https://kubernetes/api
     {
@@ -554,7 +568,7 @@ parameters:
 
   **More On service account**
   - Secure access to API server
-    - Authentication via plugins
+    - Authentication via plugins, who the heck are you?
       - Client Certificates - most common
       - Authentication token - mostly used for serviceaccount(jwt, json web token)
       - Basic HTTP - Not recommended
@@ -564,6 +578,12 @@ parameters:
   - Type of users
     - Person
     - Application
+
+  **LDAP integration**
+  https://theithollow.com/2020/01/21/active-directory-authentication-for-kubernetes-clusters/
+  https://computingforgeeks.com/active-directory-authentication-for-kubernetes-kubectl/
+
+  LDAP group translate to namespace in k8s - Need to test this
 
 - Create role and rolebinding
   - ClusterRoleBinding - cluster level
@@ -700,7 +720,7 @@ parameters:
         client-key-data: <base64 -w0 user.key>
     ```
 
-  - Create role
+  - Create role\
     `k create role readonlyuser --verb=get,list --resource=pods --namespace=default`
 
     ```
@@ -725,7 +745,7 @@ parameters:
       - *
 
     ```
-  -  Rolebinding - bind role to the user
+  -  Rolebinding - bind role to the user\
     `k create rolebinding readonlyrolebinding --role=readonlyuser --user=john --namespace=default`
 
     ```
@@ -752,12 +772,12 @@ parameters:
     - **How do you list user in a group**?
       - You cannot.  group name is created during user certificate signing request, /O=<groupname>
         `-subj "/CN=john/O=platform-prod"`\
-        **CN:** This will be set as username
+        **CN:** This will be set as username\
         **O:** Org name. This is actually used as a group by kubernetes while authenticating/authorizing users. You could add as many as you need\
         `openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=dev/O=example.org"`\
         `openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=default"`
 
-    - Bind group and role:
+    - Bind group and role:\
      `k create rolebinding groupbinding --role=readonlyuser --group=<groupname, should be same as certificate subj /O=<groupname>> -n <namespace>`
 
 
