@@ -448,6 +448,58 @@ parameters:
   - x509 certificate
   - webhook
 
+## kubeconfig - used for authentication
+- save config under ~/.kube/config. This will save you from passing --kubeconfig parameter
+-
+  ```
+  apiVersion: v1
+  clusters:
+  - cluster:
+      certificate-authority-data: DATA+OMITTED #Kubernetes CA certificate
+      server: https://myclusterip:6443
+    name: mydemocluster # Give name for the cluster inside kubeconfig
+  contexts: # makes relationship between clusters and users
+  - context:
+      cluster: mydemocluster # used cluster name mentioned above
+      namespace: default
+      user: user2
+    name: default # Give name to context and access default namespace by user2
+  - context:
+      cluster: mydemocluster
+      namespace: default
+      user: user1
+    name: mydefaultcontext
+  - context:
+      cluster: mydemocluster
+      namespace: platform-dev
+      user: user2
+    name: platform-dev
+  - context:
+      cluster: mydemocluster
+      namespace: platform-prod
+      user: user3
+    name: platform-prod
+  current-context: platform-dev # this value keeps changes as per use-context parameter.
+  kind: Config
+  preferences: {}
+  users:
+  - name: user1
+    user:
+      client-certificate-data: REDACTED
+      client-key-data: REDACTED
+  - name: user2
+    user:
+      client-certificate-data: REDACTED
+      client-key-data: REDACTED
+  - name: user3
+    user:
+      client-certificate-data: REDACTED
+      client-key-data: REDACTED
+  ```
+` kubectl config view`\
+`kubectl config use-context platform-dev`\
+`kubectl get po`
+
 ## ServiceAccounts
   - Kubernetes has can't create users/groups. It needs to be managed externally.
   - ca, certificaet Authority is the brain of trust in Kubernetes
@@ -573,7 +625,7 @@ parameters:
       - Authentication token - mostly used for serviceaccount(jwt, json web token)
       - Basic HTTP - Not recommended
       - OpenID Connect - Azure
-    - Authorization (permission to perform certain task)
+    - Authorization (permission to perform certain task) - Groups or Roles RBAC
     - Admission control (webhooks)
   - Type of users
     - Person
