@@ -293,3 +293,6 @@ rewrite_rule: "^(.*)$ https://www.%{literal('%')}HTTP_HOST%{literal('%')}{REQUES
  - r10k module management
   - much better approach to module management
   -
+
+# class role and profile
+-

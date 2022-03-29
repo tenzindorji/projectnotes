@@ -14,6 +14,7 @@
     }
     ```
     - versioned control
+    -
 
   - Scripted pipeline - Groovy syntax
     - code is defined within node block

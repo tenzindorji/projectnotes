@@ -875,7 +875,87 @@ parameters:
 - Deployment has its own label, this label is mapped by the selector in service to establish the connections between deployment and service components.
 
 
-## Jobs and Cronjobs
+## Jobs
+- Jobs run until it is exited with completion code
+- if the job pod is deleted, it gets created again until job is completed.
+
+- **completion**
+  - Runs in sequence, once first job is completed, it created new pod and start the same job.
+
+- **parallelism**
+  - All the job pods will be created and executed at the same time.
+
+- **backoffLimit**
+  - Number of retries when job fails, we do not want to create job infinite times.
+
+- **activeDeadineSeconds**
+  - set a threshold, if the job is not completed within provided time limit, delete the job.
+
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: demo-job
+spec:
+  completions: 3 # three pods will be created two sec apart
+  parallelism: 4 # runs 4 pods in same time
+  backoffLimit: 2 # two retry if the jobs fails
+  activeDeadlineSeconds: 10 #
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["echo", "Hello Kubernetes"]
+      restartPolicy: Never
+
+```
+
+## Cronjobs
+- By default it shows last three jobs
+- suspending cron jobs
+  - prevent cronjob from creating new jobs, but will not stop current running one.
+  - set suspend to true Or dynamically
+    - use yaml to trace the log, update the file and apply\
+    `kubectl apply -f <cronjob>.yaml`
+    - using dynamically:
+    `kubectl patch cronjob demo-cronjob -p '{"spec":{"suspend": "true"}}'`
+
+- concurrencyPolicy
+  - allow more than one job to run
+  - **Allow** Default, it will create new job even if previous job is running
+  - **Replace** If the previous takes long time, Replace with new Job
+  - **Forbid** wait for the job to complete before scheduling another job
+- idempotency
+- Use cases:
+  - DB backup
+  - sending emails
+  - anything periodic
+
+
+
+```
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: demo-cronjob
+spec:
+  schedule: "* * * * *"
+  successfulJobsHistoryLimit: 0 # 3 is default, zero will retain 1 job history
+  failedJobsHistoryLimit: 0 # 1 is default
+  suspend: false # true
+  concurrencyPolicy: Forbid # it take three values Allow (default), Replace, Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            command: ["echo", " Hello cronjob"]
+          restartPolicy: Never
+
+```
 
 ## multi-container Pod (sidecar, init, others)
 
@@ -891,6 +971,7 @@ parameters:
   - liveliness probes
 
 ## container logs
+-
 ## debugging in Kubernetes
 
 
