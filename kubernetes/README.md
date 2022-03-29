@@ -972,74 +972,75 @@ spec:
 
     `kubectl explain deploy.spec.strategy.type`
 
-    - recreate
-      - All existing Pods are killed before new ones are created when spec.strategy.type==Recreate
-      - application is entirely renewed.
-      - Has a downtime
+  - recreate
+    - All existing Pods are killed before new ones are created when spec.strategy.type==Recreate
+    - application is entirely renewed.
+    - Has a downtime
 
-    - blue/green
-      - release a new version alongside the old version then switch traffic
-      - avoid application version issue.
-      - minimum downtime
-      - instant rollout/rollback since both old and new version pods are still running. Traffic is switch between old and new
-      - How is done?
-        - New version is deployed but it is accessible only for testing by using direct Node port forwarding.
-        - Old version is still running and taking traffic
-        - Switch traffic to new version completely.
+  - blue/green
+    - release a new version alongside the old version then switch traffic
+    - avoid application version issue.
+    - minimum downtime
+    - instant rollout/rollback since both old and new version pods are still running. Traffic is switch between old and new
+    - How is done?
+      - New version is deployed but it is accessible only for testing by using direct Node port forwarding.
+      - Old version is still running and taking traffic
+      - Switch traffic to new version completely.
 
-        - service type should be NodePort and selector should have app name and Version.
-            ```
-            spec:
-              type: NodePort
-              Ports:
-              ...
-            selector:
+      - service type should be NodePort and selector should have app name and Version.
+          ```
+          spec:
+            type: NodePort
+            Ports:
+            ...
+          selector:
+            app: myapp
+            version: v1.0.0  # update to v2.0.0 to route to new version. Remove this line for canary deployment.
+          ```
+      - deployment:
+        - there should be two deployment files. Only difference should be version
+        ```
+          selector:
+            matchLabels:
               app: myapp
-              version: v1.0.0  # update to v2.0.0 to route to new version. Remove this line for canary deployment.
-            ```
-        - deployment:
-          - there should be two deployment files. Only difference should be version
-          ```
-            selector:
-              matchLabels:
-                app: myapp
-                version: v1.0.0 #second deployment file should have version v2.0.0
+              version: v1.0.0 #second deployment file should have version v2.0.0
 
-          ```
-        - deplyment metadata name can be v1 and v2 but matchLabels app name should be same
+        ```
+      - deplyment metadata name can be v1 and v2 but matchLabels app name should be same
 
-        - Switch traffic to v2:\
-        `kubectl patch service service/myapp '{"spec":{"selector":{"version":"v2.0.0"}}}'`
+      - Switch traffic to v2:\
+      `kubectl patch service service/myapp '{"spec":{"selector":{"version":"v2.0.0"}}}'`
 
-        - you rollback by updating version using above command.
+      - you rollback by updating version using above command.
 
 
-      - It requires double the resources
-      - Needs proper testing
-      - hard for handling stateful application
+    - It requires double the resources
+    - Needs proper testing
+    - hard for handling stateful application
 
 
-    - canary
-      - release a new version to a subset of users, then proceed to a full rollout
-      - consumer performs the testing
-      - fast rollback
-      - convenient error rate and performance monitoring
+  - canary
+    - release a new version to a subset of users, then proceed to a full rollout
+    - consumer performs the testing
+    - fast rollback
+    - convenient error rate and performance monitoring
 
-      - Slow rollout
-      - fine tune traffic distribution can be expensive
+    - Slow rollout
+    - fine tune traffic distribution can be expensive
 
-      - How is done? create two(75%) replicaSet of new version and one(25%) replicaSet of old version
-        - selector in service will just app: myapp, not version detail.
-        - MatchLabel remains same as b/g in deployment file but with different replicaSet for two deployments.
+    - How is done? create two(75%) replicaSet of new version and one(25%) replicaSet of old version
+      - selector in service will just app: myapp, not version detail.
+      - MatchLabel remains same as b/g in deployment file but with different replicaSet for two deployments.
 
-        - deploy 2 replicaset of version v1
-        - deploy 1 replicaset of version v2
+      - deploy 2 replicaset of version v1
+      - deploy 1 replicaset of version v2
 
-        `k scale --replicas=4 deploy myapp-v1`\
-        `k scale --replicas=5 deploy myapp-v2`\
-        `k delete deploy myapp-v1`
+      `k scale --replicas=4 deploy myapp-v1`\
+      `k scale --replicas=5 deploy myapp-v2`\
+      `k delete deploy myapp-v1`
 
 
+**Rollingupdate and Recreate** Example:
   ```
   metadata:
   name: hello-deploy
