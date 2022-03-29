@@ -967,8 +967,46 @@ spec:
 ## API Depreciation
 
 ## Health checks
-  - readiness probes
-  - liveliness probes
+  - **startup Probes**:
+    - Responsible for application deployed inside the docker container
+    - If the application is not running, there is no point is livenessProbes and then readinessProbes.
+    - If the application is successfully started, then only start liveness and readiness probes
+    - Once application is started, it will tells liveness and readiness probes to start.
+    ```
+    startupProbe:
+      httpGet:
+        path: /hello
+        port: 8080
+      failureThreshold: 30 # K8s will try incase probe fails, max it will wait for 5 mins(30 * 10 (retry every 10 sec) = 300 sec) to finish up application start.
+      periodSeconds: 10 # how often the check is performed
+    ```
+
+  - **liveness probes**
+    - responsible for telling docker container needs restart
+    - responsible for docker container
+
+      ```
+      livenessProbe:
+        httpGet:
+          path: /hello # health endpoint of the applications, there will be multiple endpoints
+          port: 8080
+        initialDelaySeconds: 15 # The first time when liveness will test. It is needed when we deploy application for first time and delays for 15 sec before it starts periodSeconds probe
+        periodSeconds: 10 # Regular interval after the application startup.
+      ```
+  - **readiness probes**:
+    - Door keeper for incoming traffic
+    - responsible for whole Pod
+    - responsible for telling the pod is ready to receive the traffic or Not. If the pod is not ready to receive the traffic, the readiness probe will tell kubernetes cluster that the pod is not health and remove from LB.
+    - Configuration is same as liveliness probe.
+
+    ```
+    readinessProbe:
+      httpGet:
+        path: /hello
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 10
+    ```
 
 ## container logs
 -
