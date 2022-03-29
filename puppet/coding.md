@@ -13,12 +13,47 @@ mode => '0644'
 }
 ```
 
+dollar $ sign says it is variable
+Variables can be 'string', numbers or boolean(true or false) or array
+
+Interpolate variable:
+${var}
+
+$arr = [1,2,3,4]
+
+```
+$pac = [
+  'httpd',
+  'mysql',
+  'python3.8',
+  'ruby',
+]
+
+package { $pac:
+  ensure => installed,
+}
+```
+This will install all the packages
+
+
 Double and single quotes meaning
 `$my_var = 'Hello '`
 `"${my_var}world"` translate to 'Hello world'
 `'${my_var}world'` translate to '${my_var}world' , it takes as it is
 
 variable to reference by ${}
+
+
+# Hashes variable is a key value pair
+```
+$hight = [
+  'dorji' => 23,
+  'chimi' => 49,
+]
+```
+
+# Expressions
+
 
 # Resources:
 ```
@@ -73,7 +108,7 @@ service {'sshd':
 ```
 # Resource relationship and Refresh event
 - it is achieved by using 'before/require' or 'notify/subscribe'
-- It should be Capitalized 
+- It should be Capitalized
 ```
 package { 'postgresql-server':
   ensure => installed,
@@ -220,5 +255,41 @@ https://puppet.com/docs/puppet/6.17/lang_namespaces.html#:~:text=Puppet%20class%
     ```
     Automatically looks up mymodule::myclass::myparam when value is not given
 
+# Types of hiera data
+- string, integer, boolean, array and Hash
+ - Difference between array and hash
+```
+ ip_array:
+  - '192.0.0.1'
+  - '172.0.0.2'
+ hashes:
+  key1: true
+  key2: false
+```
+# hiera data Interpolation
+```
+firewall_allow_list:
+  - "%{lookup('ips.home')}"
+  - "%{lookup('ips.office1')}"
+vpn_allow_list: "%{alias('firewall_allow_list')}"
+```
+  - alias key word will list array values, boolean or hash.
+  - literal function will take literal value(no interpolation), example:
+```
+rewrite_cond: "%{literal('%')}{HTTP_HOST} !^www\\. [NC]"
+rewrite_rule: "^(.*)$ https://www.%{literal('%')}HTTP_HOST%{literal('%')}{REQUEST_URI} [R=301,L]"
+```
+# The hierachy:
+  -
+# hiera secrets
+
 4. CLI for Hiera 5
 `puppet lookup`
+
+
+# Scheduling puppet tasks:
+
+# forge modules
+ - r10k module management
+  - much better approach to module management
+  -
