@@ -987,10 +987,10 @@ spec:
       - Old version is still running and taking traffic
       - Switch traffic to new version completely.
 
-      - service type should be NodePort and selector should have app name and Version.
+      - service type should be NodePort OR LoadBalancer  and selector should have app name and Version.
           ```
           spec:
-            type: NodePort
+            type: NodePort/LoadBalancer
             Ports:
             ...
           selector:
@@ -1006,7 +1006,7 @@ spec:
               version: v1.0.0 #second deployment file should have version v2.0.0
 
         ```
-      - deplyment metadata name can be v1 and v2 but matchLabels app name should be same
+      - deployment metadata name can be v1 and v2 but matchLabels app name should be same
 
       - Switch traffic to v2:\
       `kubectl patch service service/myapp '{"spec":{"selector":{"version":"v2.0.0"}}}'`
@@ -1073,6 +1073,75 @@ spec:
 - Pod lifecycle is controlled by replicaSet. If enabled, terminated pods will get recreated.
 
 ## StatefulSet
+  - StatefulSet is the workload API object used to manage stateful applications.
+
+
+|Stateful Application|Stateless Application|
+|---|---|
+|user login info is stored in RAM, has to login only once. If the machine is restarted, session is lost| Server issue token after authentication. It validates the token by query DB but doesn't store session|
+|Cannot scale|Can scale, lot of caching|
+|Databases| Do not keep record of previous interaction|
+||each request completely new|
+
+- **Stateless Application** are deployed using deployment
+- **Stateful applications** are deploy using StatefulSet (sts)
+
+  - Both can replicate pods , in other words, both manage pods based on container spec.
+  - can configure storage the same way for both.
+
+- Now, if both has same kind of spec and control, why do we use different component?
+  - ** Deployment VS Stateful **
+    - Replicating stateful applications is more difficult
+      - can't be created/deleted at same time
+      - can't be randomly addressed
+      - replica Pods are not identical
+      - each pod has individual identity call **Pod Identity** is actually what statefulSet does and that makes different from deployment  
+      - it maintains sticky identity for each pod
+      - pods are created from same specification, but not interchangeable.
+      - persistent identifier across any re-scheduling, meaning if pods dies and is recreated, it keeps its identity
+
+    - Why do we need Pod identity?
+      - Scaling DB applications
+      - maintains POD identity, meaning, if it is slave pod, it will be created as slave and same PV will be attached again.
+      - can have only one pod (master) who can perform write and while others can just read to prevent Data inconsistency (data replication)
+      - there is one master pod(rw) and multiple slave (r)
+      - they do not use same physical storage (PV persistent vol)
+      - data must be continuously synchronizing among all pods
+      - slave must know all the changes and update their own data storage
+      - when new pod is created, it sync data from previously created pods
+      - if all the pods dies, data will be safe since it is using PV.
+
+    - StatefulSet pods gets fixed ordered names , first pod created will be master node and rest will be slave.
+      - statefulSet with 3 replicas
+         - mysql-0 (master) , mysql-1 , mysql-2
+         - Next Pod is only created, if previous is up and running
+         - same order is apply during deletion. It will start with last pod created.
+         - This is done in order to protect data and state
+    - Own DNS EndPoint from Service
+      1. Loadbalancer service
+      2. individual service name
+        `${pod name}.${governing service domain}`
+
+-
+1. predictable pod name (mysql-0)
+2. fixed individual DNS name (mysql-0.svc2)
+
+- When Pod restarts
+  - IP address changes
+  - name and endpoint stays same, that why it is said pod gets **sticky identity**
+
+- **Sticky identity**
+  - retain state
+  - retain role
+
+
+- why is it complex?
+  - There many things kubernetes doesnt provide support, like
+    - configuring the cloning and data synchronization
+    - make remote storage available
+    - managing and backup
+
+- Stateful Applications are not a perfect for containerization
 
 ## API Depreciation
 
