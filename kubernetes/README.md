@@ -161,7 +161,7 @@
         - inefficient
       - Option 2 - DNS lookup, Kubernetes allows client to discover Pod IP addresses through DNS lookups.
         - When a client  performs DNS lookup for a service, it return single IP address of a service(ClusterIP address)
-        - But, we do not need clusterIP address of the service, by setting the `clusterIP: None` , then the DNS service will return the Pod IP address. Now a client can do simple DNS lookup to get the IP address of the Pods that are member of the service, and client can use the IP address to connect to the specific Pod or to all the Pods
+        - But, we do not need clusterIP address of the service, by setting the **clusterIP: None** , then the DNS service will return the Pod IP address. Now a client can do simple DNS lookup to get the IP address of the Pods that are member of the service, and client can use the IP address to connect to the specific Pod or to all the Pods
 
     - No Cluster IP address is assigned  
 
@@ -1070,11 +1070,55 @@ spec:
 
 
 ## replicaSet
-- Pod lifecycle is controlled by replicaSet. If enabled, terminated pods will get recreated.
+  - Pod lifecycle is controlled by replicaSet. If enabled, terminated pods will get recreated.
+  - scaling purpose
+  - replicaSet can be scheduled on any node in the cluster and is scheduled by scheduler
+
+## DaemonSet
+  - Not all Slave nodes has same hardware configuration. Some are normal and some are high performance nodes, they are differentiated by **Node Selector** and need to labelled them during node provisioning
+
+  - Start few or all nodes with some service all the time.
+  - Configuration is same as deployment file, just kind is **DaemonSet**
+  - DaemonSet pod gets recreated if deleted `k delete po`, it makes sure it is running all the time
+  - So to delete ds, `kubectl delete ds <ds-name>`, this will delete ds
+  - Sometime, there are requirements that Nodes needs to deploy with some set of pods always. Like Monitoring app: collectd, fluentd and ceph , also node monitoring
+  - Node-Selector
+
+  - There are some daemonset running in kube-system , like nginx or traefik\
+    `k describe daemonset svclb-traefik -n kube-system`
+  - kube-proxy needs to run on all the nodes
+
+    ```
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: fluentd-ds
+    spec:
+      selector:
+        matchLabels:
+          name: fluentd
+      #Pod Template
+      template:
+        metadata:
+          labels:
+            name: fluentd
+        spec:
+          containers:
+          - image: gcr.io/google-containers/fluentd-elasticsearch:1.20
+            name: fluentd
+          #nodeSelector:
+          #  gpupresent: true #Deploy only to the node which has this label equals to true.
+    ```
+
+    - Need to assign labels to make it working \
+    `k get nodes -l gpupresent=true`\
+    `k label node <nodename> gpupresent=true` # assign a label
+
 
 ## StatefulSet
   - StatefulSet is the workload API object used to manage stateful applications.
-
+  - Kind: statefulSet
+  - in service, ClusterIP: None (Headless)
 
 |Stateful Application|Stateless Application|
 |---|---|
@@ -1143,7 +1187,8 @@ spec:
 
 - Stateful Applications are not a perfect for containerization
 
-## API Depreciation
+
+
 
 ## Health checks
   - **startup Probes**:
@@ -1187,10 +1232,47 @@ spec:
       periodSeconds: 10
     ```
 
+## Static pod, what is this?
+
+
+## Pod Status
+  - Running
+  - ImagePullBackOff - docker image not accessible , incorrect image
+  - RunContainerError - may be missing Configmap/Secrets
+  - ContainerCreating - something no available immediately - PV?
+
+  - After container is started, few more errors might occur  
+    - CrashLoopBackOff - Pod liveness check failed or image faulty, CMD exiting immediately
+    - if pod is running but app is not working -
+      - check container logs
+        `kubectl logs <podname> --tail=10` \
+        `kubectl logs <podname> --previous` # check previous dead pod
+        `kubectl exec -it <podname> /bin/sh`
+  - check the events related to pods , this will give more details on Pod Status. The last few lines will show the reason.
+    - `kubectl describe po <podname>`\
+    ```
+    Events:
+  Type     Reason            Age                      From     Message
+  ----     ------            ----                     ----     -------
+  Warning  DNSConfigForming  4m48s (x13955 over 12d)  kubelet  Search Line limits were exceeded, some search paths have been omitted, the applied search line is: default.svc.cluster.local svc.cluster.local cluster.local corp.chartercom.com twcable.com corp.twcable.com
+
+    ```
+  - Cluster Level Events:
+    `k get events`
+
+
 ## container logs
 -
 ## debugging in Kubernetes
+ - kubectl describe po
+ - kubectl describe no
+ - kubectl describe ds
+ - kubectl logs fluentd-ds-z8zs5 --previous # check terminated pod logs, did not work. Thats why it need to store the logs centrally ELK
+ - kubectl logs nginx-7d8b49557c-c2lx9 -c nginx # container specific
+ - kubectl logs -f nginx-7d8b49557c-c2lx9 # tail the logs
 
+
+## Security:
 
 
 # Docker Swarm
