@@ -337,6 +337,15 @@ ssh-keygen  #command to generate ssh key pair
 can change the login behavior in the file /etc/ssh/ssh_config  /etc/ssh/sshd_config
 Save all the host details in ~/.ssh/config
 
+## SSH jump box and proxying
+
+`ssh -J <bastion-host> <remote-host>` # user name and port are same with bastion and remote host \
+`ssh -J user@<bastion:port> <user@remote:port>` # user name and port are different for jump box and remove host\
+`ssh -J <bastion1>,<bastion2> <remote>` # multiple jump box.
+
+## Data encryption
+
+## vol encryption
 
 # Type of files in Linux:
 * `-` : regular file

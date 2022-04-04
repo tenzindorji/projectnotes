@@ -4,6 +4,109 @@
   - Other similar software are : nginx, squid and Varnish
 
 
+## What is proxy
+  - hides the identity of client, meaning server will not know who the client is. Server only gives response to proxy server, and then proxy server to client
+  - Clients --> Proxy Servers --> Servers
+  - Servers have no idea who is client
+
+  **Benifits**
+    - anonymity
+    - caching - Static sites
+    - blocking unwanted sites
+    - GeoFencing
+
+## what is reverse Proxy:
+  - Servers --> Proxy --> Clients
+  - Clients have no idea which servers it is connected
+
+  **Benifits**
+    - LB
+    - Caching
+    - Isolating Internal Traffic
+    - Logging
+    - Canary Deployment
+
+## layer 4 LB (Haproxy, NLB - Network Loadbalancer ) , we only know the port and IP
+- Forwards packets based on basic rules, it only knows IP and PORT and perhaps latency of the target service. This is what is available at layer 4/3. This load balancer doesn't look at the content so it doesn't know the the protocol whether its HTTP or not, it doesn't know the URL or the path or the resources you are consuming or whether you are using GET or POST.
+
+-
+
+  - Pros:
+    1. Great for simple packet-level LB
+    2. Fast and efficient doesn't look at the data
+    3. More secure as it can't really look at your packets. so if it was compromised no one can look at the data.
+    4. Doesn't need to decrypt the content it merely forwards whatever content in it.
+    5. uses NAT -
+    6. One connection between client and server NATed so your LB can serve a maximum number of tcp connections = to (number of servers * max connections per server)
+
+  - Cons:
+    1. Can't do smart LB based on the content, such as switch request based on the requested media type.
+    2. Can't do real microservices with this type
+    3. Has to be sticky as it is stateful protocol (all segments ) once a connections is established it goes to one server at the backend. All packets flowing to this connection goes to one server. The next connection will pick another server based on the algorithm(Roundrobind, leaseconnection).
+
+   ```
+   defaults
+   errorfile  200 /etc/haproxy/errorfiles/gslb_health
+   log  global
+   maxconn  6000
+   mode  tcp # this is layer 4 LB setting in haproxy
+
+   ```
+## Layer 7 LB (Ngix and Haproxy) -
+- This type of proxy actually looks at the content and have more context, it knows you are visiting the /users resource so it may forward it to a different server. Essential and great for microservices, it knows the content is video:image and it con do compression. It can add its own headers so other proxies or LB can see that this has passed through a proxy. It can also cache, we can't really do caching on layer 4 because we have no clue whats in the packet.
+
+  - Pros
+    1. Smart routing based on the URL(microservices) flexible
+    2. Provide caching
+  - Cons
+    1. Expensive need to decrypt
+    2. Security, you have to share your certificate with the LoadBalancers. If an attacker compromised the LB they have access to all your data.
+    3. Proxy creates multiple connections (client to proxy/proxy to server). So your are bounded by the max TCP connections on your LB. Example, if your LB supports 200 mx TCP connections and you have 5 backend servers, the LB servers each with 200 mac connection. Your LB can only serve (concurrently)(200 - 5) clients. 5 connections are from the LB to each backend server and 195 available for clients. Where if that was layer 4 LB, you can serve 200 * 5 connections.
+
+
+    ```
+    defaults
+    errorfile  200 /etc/haproxy/errorfiles/gslb_health
+    log  global
+    maxconn  6000
+    mode http # this is layer 7 LB setting in haproxy
+
+
+With all those cons we almost have to use Layer 7 load balancer because the benefits outway the cons, especially that we don't have resources constraints.
+
+
+## headers
+## cookies
+## Content type
+
+## ELB VS ALB VS NLB
+
+
+
+## Iptables
+  - Kernel native LBing netfilter packet level
+  - No software
+  - Layer4 LB
+  - order matters a lot
+
+    ```
+    sudo iptables --table nat --list
+    Chain PREROUTING (policy ACCEPT)
+    target     prot opt source               destination
+
+    Chain INPUT (policy ACCEPT)
+    target     prot opt source               destination
+
+    Chain OUTPUT (policy ACCEPT)
+    target     prot opt source               destination
+
+    Chain POSTROUTING (policy ACCEPT)
+    target     prot opt source               destination
+
+    ```
+
+
+
 ## Transport layer LB:
 - this is called 4 layer LB.
 - Used to load balance network traffic bw mutiple servers.
@@ -158,3 +261,33 @@ alpn(application layer protocol negotiation)
 h2 - http2
 
 https://www.bing.com/videos/search?q=haproxy+tutorial&docid=608049472514492166&mid=0D0E4469A0AB6D5CC3100D0E4469A0AB6D5CC310&view=detail&FORM=VIRE
+##
+-
+
+
+## HA setup using haproxy:
+nbsrv -number of backend server
+
+```
+frontend www-ssl
+  acl is_myapp                     hdr_beg(host)             myapp uat-myapp
+  acl is_myapp_down                 nbsrv(www-myapp)     lt 1
+  bind *:443 ssl npn http/1.0,http/1.1 no-sslv3 crt /etc/ssl/myapp.pem
+  use_backend www-myapp                       if    is_myapp_ui # primary servers
+  use_backend www-myapp-backup             if    is_myapp_down is_myapp
+
+backend www-myapp
+  balance leastconn
+  cookie SOMUI insert indirect nocache
+  log 127.0.0.1 local3 notice
+  server sr1 server1:7210 check cookie primary
+  server sr2 server2:7210 check cookie primary
+
+backend www-myapp-backup
+  balance leastconn
+  cookie SOMUI insert indirect nocache
+  log 127.0.0.1 local3 notice
+  server sr3 server3:7210 check cookie backup
+  server sr4 server4:7210 check cookie backup
+
+```

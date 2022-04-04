@@ -37,6 +37,8 @@
   - Tiller has toomuch of permission inside kubernetes which creates security concerns hence is was removed since helm 3. Now it is just a binary file.
 
 
+## How do you version control deployments?
+- using Helm chart
 
 
 ## How to use them?
