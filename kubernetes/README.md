@@ -233,6 +233,8 @@ apiVersion: v1
 kind: Ingress
 metadata:
   name: myapp-ingress
+  annotations:
+    http.port: "443" #Expose ingress to port 443
 spec:
   rules:
   - host: myapp.com
