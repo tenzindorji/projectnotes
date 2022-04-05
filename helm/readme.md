@@ -1,6 +1,5 @@
 # Helm
-<<<<<<< HEAD
-- package manager for kubernetes, collecting kubernetes yaml and storing in repository
+- package manager for kubernetes, collecting kubernetes yaml and storing in repository. Helm is not just package manager but more than that
 - performs value lookup in the template, separate variables in values.yml
 - keeps old version and can easily rollback
 - chart - templating(go templates) - bundles of yaml files
@@ -8,8 +7,6 @@
 - Has two parts -- tiller is no available in latest version of helm due to security reason(too much permission)
   - helm client CLI
   - Tiller at server side - stores history for rollback purpose.
-=======
->>>>>>> e4039ff09422325323a19fefd1bc3d0582f06b7e
 
 ## What is helm?
   - package manager for kubernetes, package YAML files.
@@ -24,10 +21,14 @@
   - Keeps old version and can easily rollback
   - Chart - templating
   - It is Templating Engine
+  - Inheritance
+  - reduce indent errors
 
 ## what is helm chart?
 - Bundles of yaml files are call helm charts, can be published to others in public registries or download existing one.
 - Sharing charts
+- can versioned deployments
+- can rollback deployments
 
 
 ## Architecture
@@ -40,8 +41,22 @@
 ## How do you version control deployments?
 - using Helm chart
 
+## Lifecycle Management
+- Update, rollback, config management, testing
+- repeatability
+
+
+
 
 ## How to use them?
+```
+get the stable version from https://github.com/helm/helm and go to releases
+
+curl -LO https://get.helm.sh/helm-v3.8.1-linux-386.tar.gz
+tar -C /tmp/ -zxvfhelm-v3.8.1-linux-386.tar.gz
+mv /tmp/linux-386/helm  /usr/local/bin/helm
+chmod +x /usr/local/bin/helm
+```
 
 ## When to use them?
 
@@ -64,9 +79,6 @@ mychart/ # name of the chart
   templates/  # the actual template files
   ...
 ```
-<<<<<<< HEAD
-helm install myApp # Deploy yaml files to kubernetes cluster
-=======
 
 ```
 apiVersion: v1
@@ -93,7 +105,6 @@ container:
 
 ```
 helm install myApp # Deploy to kubernetes cluster, gets the values from values.yaml file
->>>>>>> e4039ff09422325323a19fefd1bc3d0582f06b7e
 helm upgrade myApp #used for scaling or refreshing configuration
 helm rollback myApp #rollback back to previous last known configuration
 helm Package myApp #Upload configuration to repository
@@ -101,13 +112,47 @@ helm search <keyword>
 
 helm install --values=my-values.yaml <chartname> # override default values, it will result to .Values object which is merged between two values files
 helm install --set version=2.0.0 # override default value using set flag.
+
+helm test $(helm last) #
+helm delete $(helm last)
+
+helm list # shows the revision of deployments
 ```
-# Directory structure
+
+## Config Map change
+- Kubernetes doesn't automatically starts pod when there is change in config map.
+- Helm can perform pod restart when config map is updated.
 ```
-mychart/ # name of the helm chart folder
-  Chart.yaml # meta info about chart, name, version, list of dependencies
-  values.yaml # Default values for template files
-  charts/ # Folder chart dependencies
-  templates/ # actual template files
-  ...
+kind: Deployment
+spec:
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.basePath "/configmap.yaml"). | sha256sum }}
 ```
+
+`helm upgrade <nameofapp> <folder name example-app(chart name )> --values ./example-app/example-app.values.yaml`
+
+
+
+## Helm Jenkins Pipeline
+1. commit code (git)
+2. commit trigger jenkins Pipeline
+3. Jenkins build image and test
+4. Image is pushed to container repository
+5. Jenkins pulls the repository helm
+6. image is deployed to Kubernetes  
+
+
+## Helm templating
+- **Test the rendering of the template created**
+`helm template <app-name> chartname(folder name and path)`
+- **Install app using chart**
+`helm install example-app ../example-app`\
+
+`helm list`
+
+`kubectl get po`
+
+
+## If and Else Statement in Deployment files with values
