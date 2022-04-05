@@ -154,5 +154,7 @@ spec:
 
 `kubectl get po`
 
+`helm delete <app-name>`
+
 
 ## If and Else Statement in Deployment files with values
