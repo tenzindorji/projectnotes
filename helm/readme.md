@@ -145,16 +145,16 @@ spec:
 
 
 ## Helm templating
-- **Test the rendering of the template created**
-`helm template <app-name> chartname(folder name and path)`
-- **Install app using chart**
-`helm install example-app ../example-app`\
+- **Test the rendering of the template created**\
+  `helm template <app-name> chartname(folder name and path)`
+- **Install app using chart**\
+  `helm install example-app ../example-app`\
 
-`helm list`
+  `helm list`
 
-`kubectl get po`
+  `kubectl get po`
 
-`helm delete <app-name>`
+  `helm delete <app-name>`
 
 
 ## If and Else Statement in Deployment files with values
