@@ -959,6 +959,63 @@ spec:
 
 ```
 
+## HorizontalPodAutoscaler (HPA)
+-  A Kubernetes functionality to scale out (increase) or scale in (decrease) the number of pod replicas automatically based on defined metrics.
+- cooling period
+  - checks every  30 sec
+  - 3 mins to scale up
+  - 5 mins to scale down
+
+- Hipstar is old metrics severs , need to install latest one to make hpa working
+
+- set resource limit
+
+- **Relationship between HPA and RS**
+  - Deployment controls RS, RS controls Pods.
+  - If deployment has RS of 2 and HPA min has 3, then hpa will update RS with 3 and deploys one pod to make it three running.
+  - But if you update HPA min to 2, pods doesn't scale down. -- Need to check this.
+
+
+- **Limitation**
+  1. One of HPA’s most well-known limitations is that it does not work with DaemonSets.
+  2. If the cluster is out of capacity, HPA will not work untill nodes are added
+  3. If you don’t efficiently set CPU and memory limits on pods, your pods may terminate frequently or, on the other end of the spectrum, you’ll waste resources.
+
+`k -n platform-dev autoscale deployment hello-world --cpu-percent=50 --min=1 --max=5 --dry-run=client -o yaml`\
+`k top nodes` # gives node CPU and memory utilization on all the nodes in the cluster
+
+```
+apiVersion: autoscaling/v1
+Kind: HorizontalPodAutoscaler
+metadata:
+  namespace: default
+spec:
+  maxReplicas: 5
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: nginx
+  targetCPUUitlizationPercentage: 20
+```
+
+## Vertical Pod Autoscaling (VPA)
+- A Kubernetes functionality to right-size the deployment pods and avoid resource usage problems on the cluster. VPA is more related to capacity planning than other forms of K8s autoscaling.
+- Deploys new pod with higher CPU/memory
+
+
+## Cluster Autoscaler (CA)
+- Scale cluster nodes
+- When Cluster Autoscaler is active, it will check for pending pods. The default scan interval is 10 seconds, which is configurable using the --scan-interval flag.
+- If there are any pending pods and the cluster needs more resources, CA will extend the cluster by launching a new node
+- Kubernetes registers the newly provisioned node with the control plane to make it available to the Kubernetes scheduler for assigning pods.
+- Finally, the Kubernetes scheduler allocates the pending pods to the new node.
+
+- **Limitation**
+- CA does not make scaling decisions using CPU or memory usage. It only checks a pod’s requests and limits for CPU and memory resources. This limitation means that the unused computing resources requested by users will not be detected by CA, resulting in a cluster with waste and low utilization efficiency.
+
+`--enable-autoscaling --min-nodes 1 --max-nodes 5`
+
 ## multi-container Pod (sidecar, init, others)
 
 ## Deployment strategies

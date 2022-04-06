@@ -13,6 +13,8 @@
 `terraform init`
 
 3. Plan  create an execution plan, preview of whats going to happen
+`terraform fmt` # check the format \
+`terraform validate` \
 `terraform plan`
 
 4. Apply
@@ -20,7 +22,50 @@
 
 `terraform destroy` # destroy the resources/infrastructure \
 `terraform refresh`  # Query infrastructure provider to get current state\
-`terraform show` # to view the details of the resources just created
+`terraform show` # to view the details of the resources just created, it gets details from terraform.tfstate file.
+
+terraform.tfstate file needs to be stored securely in remote location to keep track of changes and also it contain lot of sensitive information.
+
+## Terraform Variable
+- auto load tf var files
+  - named var file as boo.auto.tfvars or variables.tf or terraform.tfvars
+- how to load custom var file?
+  - `terraform apply -var-file dev.tfvars`\
+  - This will load both dev.tfvars and terraform.tfvars files\
+  - Or `terraform apply -var="my_instance_type=t2.large"`
+  - Or set environament variable
+    `TF_VAR_my_instance_type="t2.large" terraform apply`
+
+  - **variable precedence**
+    1. Environment variable
+    2. terraform.tfvars
+    3. terraform.tfvars.json
+    4. *.auto.tfvars or *.auto.tfvars.json
+    5. Any var files
+
+## Terraform modules
+
+## Terraform workspaces
+
+## Terraform output
+
+## Terraform state
+- What is state
+  - terraform plan/apply creates state file
+  - it is a black box and keeps recording all the changes.
+- What is local state
+- What is remote state
+  - Create s3 bucket using terraform
+  - store state file to s3 using terraform
+  - it will not create state file in local, still be uploaded directly to cloud
+
+## Terraform pull command
+- update local terraform state file from remote
+-
+ `terraform state pull`\
+ `terraform state push` # Do not do this \
+
+
 
 
 ## Terraform VS Ansible
