@@ -11,6 +11,21 @@
   - After resolving code conflicts by deleting the conflicting code from git UI, need to merge the commits
   - and Merge the pull request to master
 
+  - Rebase to fix code conflicts: 
+  ```
+  git checkout master
+  git pull && git fetch -p
+  git checkout yourbranch 
+  git rebase origin/master
+  ---resolve code conflict .. .
+  atom . 
+  keep the latest changes and save the file 
+  git add .
+  git commit -m "rebase bleh bleh"
+  git rebase --continue 
+  git push --force
+  ```
+
 # Git cherry-pick
 - when to use it?
   - `man git-cherry-pick`
