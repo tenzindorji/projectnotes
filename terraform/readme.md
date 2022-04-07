@@ -44,6 +44,86 @@ terraform.tfstate file needs to be stored securely in remote location to keep tr
     5. Any var files
 
 ## Terraform modules
+- Create folders
+  - modules
+    - vpc
+      - var.tf
+          ```
+          variable "vpc_cidr" {
+            default = ""
+          }
+          variable "tenancy" {
+            default = "dedicated"
+          }
+          variable "vpc_id" {}
+          variable "subnet_id" {}
+          ```
+      - networking.tf
+          ```
+          resource "aws_vpc" "main" {
+            cidr_block = "${var.vpc_cidr}"
+            instance_tenancy = "${var.tenancy}"
+
+          }
+
+          resource "aws_subnet" "main" {
+            vpc_id = "{var.vpc_id}"
+            cidr_block = "${var.subnet_cidr}"
+          }
+
+          output "vpc_id" {
+            value = "${aws_vpc.main.id}" # return value
+          }
+
+          output "subnet_id" {
+            value = "${aws_subnet.main.id}"
+          }
+          ```
+    - instances
+      - ec2.tf
+        ```
+        resource "aws_instance" "web" {
+          ami = "${var.ami_id}"
+          instance_type = "${var.instance_type}"
+          subnet_id = "${var.subnet_id}"
+        }
+        ```
+      - var.tf
+        ```
+        variable "ami_id" {}
+        variable "instance_type" {
+          type = "t2.micro"
+        }
+        variable "subnet_id" {}
+        ```
+  - dev
+    - main.tf
+    ```
+    provider "aws" {
+      region = ""
+
+    }
+
+    module "my_module_name_vpc" {
+      source = "../modules/vpc"
+      vpc_cidr = ""
+      tenancy = ""
+      vpc_id =  "${module.my_module_name_vpc.vpc_id}" # how to access value from module? define them as out put
+      subnet_cidr = ""
+    }
+
+    module "my_ec2" {
+      source = "../modules/ec2"
+      instance_type = t2.micro
+      ..
+      ..
+      subnet_id = "${module.my_ec2.subnet_id}"
+    }
+    ```
+  - prod
+
+- How do you reference to modules
+
 
 ## Terraform workspaces
 
