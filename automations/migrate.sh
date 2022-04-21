@@ -1,4 +1,4 @@
-atom#! /bin/bash -x
+#! /bin/bash -x
 set +e
 
 home=`pwd`
@@ -69,7 +69,7 @@ elif [[ $action == rollback ]];then
       echo "Running puppet ..." >> $home/tmp/migrate.log
       $SSH_OPTION$server "for i in 1;do sudo /usr/local/bin/puppet agent -t &> /tmp/puppetupgrade.log;head /tmp/puppetupgrade.log;tail /tmp/puppetupgrade.log; echo '';echo '';done" 1>> $home/tmp/migrate.log 2>> $home/tmp/migrate.log &
       certname=`$SSH_OPTION$server grep -ir '^certname' /etc/puppetlabs/puppet/puppet.conf|awk '{print $3}'`
-      ${SSH_OPTION}new_puppet_master.myserverdomain.com sudo /opt/puppetlabs/bin/puppet node purge $certname &> /dev/null &
+      $SSH_OPTION$new_puppet_master.myserverdomain.com sudo /opt/puppetlabs/bin/puppet node purge $certname &> /dev/null &
   done
 fi
 

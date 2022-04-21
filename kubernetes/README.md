@@ -1330,6 +1330,52 @@ spec:
  - kubectl logs nginx-7d8b49557c-c2lx9 -c nginx # container specific
  - kubectl logs -f nginx-7d8b49557c-c2lx9 # tail the logs
 
+## Cluster upgrade
+  - Master upgrade
+    - first upgrade master and upgrade nodes
+    - while setting up cluster, make sure master installed in regions.
+
+  Node Upgrade:
+    1. rolling update
+      - one by one, node is drained and cordon so that there is no more pods running on that node. New node is created with upgraded version and old node is deleted.
+
+      `kubetctl cordon node <nodename>` # no more new pods will be schedule on this node\
+      `kubectl drain node <nodename>` --force # This will delete pods on this node, before moving next, make sure pods are created in new nodes\
+
+      `kubectl uncordon node <nodename> # Incase of any issue during upgrade, uncordon the node and delete new node`
+
+      - Cons:
+        - one less node, but can be fixed be adding/scaling extra node before upgrade
+        - takes time to rollback.
+        - less control
+
+    2. Migrating with node pool
+      - Create fresh nodes with latest version, while old node version is still running
+      - more control since pods will be migrated by running commands yourself
+
+## Back and restore
+-  backup:
+  - backup certificates /etc/kubernetes/pki/
+  - Install etcdctl to take snapshot of etcd DB
+    `etcdctl snapshot save /backup/snapshot.db`
+
+    `kubeadm reset -f` # this will break the cluster to simulate disaster  
+
+- Restore
+  - copy all the certificates to /etc/kubernetes/pki from backup folder.
+  - retore
+    `etcdctl snapshot restore backup/snapshot.db`
+
+    - etdc gets restored to default.etdcd
+     now move member folder to /var/lib/etcd
+      mv default.etdcd/member  /var/lib/etcd
+
+    - initialized the restore
+      `kubeadm init --ignore-preflight-errors=DirAvailable--var-lib-etcd` # this will take sometime.
+
+      `kubectl get nodes`
+
+
 
 ## Security:
 

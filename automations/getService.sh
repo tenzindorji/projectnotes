@@ -36,6 +36,15 @@ END
       echo -en $server: >> $home/servicesrunning;
       echo "`grep "hostname:" /tmp/processes|awk -F":" '{print $2}'`:" >> $home/servicesrunning;
       echo `grep "application=" /tmp/processes|awk -F"=" '{print $2}'`_haproxy >> $home/servicesrunning
+    #elif [[ $role == '[aem]*' ]];then
+    #  echo -en $server: >> $home/servicesrunning;
+    #  echo "`grep "hostname:" /tmp/processes|awk -F":" '{print $2}'`:" >> $home/servicesrunning;
+    #  echo "${role}_${application_component}" >> $home/servicesrunning
+    #elif [[ $role == 'atg' ]];then
+    #  echo -en $server: >> $home/servicesrunning;
+    #  echo -en "`grep "hostname:" /tmp/processes|awk -F":" '{print $2}'`:" >> $home/servicesrunning;
+    #  service=`grep -E "role=" /tmp/processes|awk -F"::" '{print $3}'`
+    #  echo "${role}_${service}_${application_component}" >> $home/servicesrunning
     else
       cat /tmp/processes|awk -F"-jar" '{print $2}'|grep -v appdynamics|grep -v shinyproxy|awk -F".jar" '{print $1}'|awk -F "/" '{print $NF}'|uniq -u|sort|sed 's/\ //' > /tmp/services
       cat /tmp/processes|awk -F"-jar" '{print $2}'|grep -v appdynamics|grep -v shinyproxy|awk -F".war" '{print $1}'|awk -F " " '{print $1}'|awk -F "/" '{print $NF}'|awk -F".jar" '{print $1}'|uniq -u|sort|sed 's/\ //' >> /tmp/services

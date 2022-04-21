@@ -37,3 +37,7 @@ done
 sleep 5
 
 cat  `find $home/tmp/tmp/ -type f |paste -d" " -s -` >> $home/tmp/list_folders.log
+#cat  $home/tmp/tmp_list_folders.log|sort | xargs | sed -e 's/ /,/g' >>  $home/tmp/list_folders.log
+
+#
+# $SSH_OPTION$server "sudo find / |grep log4j-core-2" > $home/tmp/tmp_list_folders.log

@@ -1,21 +1,30 @@
 #! /bin/bash
 set +xe
 
-sed -i 's/\r//g' ${3}
+
+die () {
+    echo >&2 "$@"
+    echo "
+    Usage:
+        $0 ssh_user userid newpwd serverlist"
+
+    exit 1
+}
+
+[ "$#" -eq 4 ] || die "4 argument required, $# provided"
+
+
+sed -i 's/\r//g' ${4}
 workdir=`pwd`
 cat /dev/null > ${workdir}/tmp/reset_pwd.log
-#echo $workdir
-#for server in `cat ${3}`;do
-#ssh -o StrictHostKeyChecking=no -q ${1}@${server} << END
-#sudo su
-#echo "$2"| passwd $1 --stdin
-#END
 
-#done
 
-for server in `cat ${3}`; do
+
+
+for server in `cat ${4}`; do
  #echo $server >>  ${workdir}/tmp/reset_pwd.log
  echo "Updating on $server"
- ssh -o StrictHostKeyChecking=no -q ${1}@${server} "hostname && echo $2| sudo passwd $4 --stdin"  1>> ${workdir}/tmp/reset_pwd.log 2>> ${workdir}/tmp/reset_pwd.log &
+ ssh -o StrictHostKeyChecking=no -q ${1}@${server} "sudo pam_tally2 --user $2 --reset" &
+ ssh -o StrictHostKeyChecking=no -q ${1}@${server} "hostname && echo $2| sudo passwd $3 --stdin" &  #1>> ${workdir}/tmp/reset_pwd.log 2>> ${workdir}/tmp/reset_pwd.log &
  sleep 1
 done
