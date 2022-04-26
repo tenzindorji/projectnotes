@@ -121,10 +121,10 @@ elif [[ ${1} == "adjoin" ]];then
   if [[ $DC == CDC ]] && [[ -z ${katellostatus} ]];then
   #if [[ $DC == CDC ]];then
     echo "Installing latest katello in NCE"
-    rpm -Uvh http://vm0pnsatcpa0001.myserverdomain.com/pub/katello-ca-consumer-latest.noarch.rpm
+    rpm -Uvh http://server1.myserverdomain.com/pub/katello-ca-consumer-latest.noarch.rpm
   elif [[ $DC == NCW ]];then
     echo "Installing latest katello in NCW"
-    rpm -Uvh http://vm0pnsatmsa0001.myserverdomain.com/pub/katello-ca-consumer-latest.noarch.rpm
+    rpm -Uvh http://server2.myserverdomain.com/pub/katello-ca-consumer-latest.noarch.rpm
   fi
   echo "------------------------------"
   echo "katello-ca-consumer version:"
@@ -134,7 +134,7 @@ elif [[ ${1} == "adjoin" ]];then
   if [[ $OSVERSION -lt 7 ]];then
     echo "Re-register the systems in Satellite"
     subscription-manager register --org New_Charter --activationkey RHEL6-Live --force
-    subscription-manager attach --pool c3b06a847e8dac47017eb2b7cbd232d3
+    subscription-manager attach --pool c3b*******token
     rm -rf /var/cache/yum/*
     yum clean all
     yum repolist
