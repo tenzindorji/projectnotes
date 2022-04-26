@@ -4,12 +4,12 @@ This project is parameterized
   - Choice Parameter
     - Name: ACTION
     - Choices:\
-        enable
+        enable\
         disable
   - Choice Parameter
     - Name: DC
     - Choices:\
-        nce
+        nce\
         ncw
 
 Execute Shell
