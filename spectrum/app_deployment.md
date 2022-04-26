@@ -1,7 +1,7 @@
 ## Jenkins Job app deployment
 
 This project is parameterized
-  - > Active Choices Parameter
+  - Active Choices Parameter
     Name: ACTION
     script: Grovy Script (select this)
       Script:
@@ -15,11 +15,12 @@ This project is parameterized
     Choice Type: Radio Buttons
     Filter Start at: 1
 
-  - > Active Choices Reactive Reference Parameter
+  - Active Choices Reactive Reference Parameter
     Name: VERSION
     script: Grovy Script (select this)
       Script:
         Grovy Script:
+          ```
           if  ( ACTION == "DEPLOY" ) {
           deployHtml = '''
           <input type="text" class="setting-input" name="value">
@@ -31,6 +32,7 @@ This project is parameterized
           return deployHtml
 
           }
+          ```
 
 
         Check "Use Grovy Sandbox"
@@ -38,7 +40,7 @@ This project is parameterized
     Referenced parameters: ACTION
 
 
-  - > Bindings
+  - Bindings
     Username and Password(Separated):
       Username Variable: JENKINS_USER
       Password Variable: JENKINS_PASSWORD
@@ -47,10 +49,10 @@ This project is parameterized
         Bit Bucket and Artifactory
 
 
-  - > Build
+  - Build
     Execute Shell
 
-    ```
+```
 #!/bin/bash
 
 set -e
@@ -120,4 +122,4 @@ done
 fi
 
 echo ""
-    ```
+```
