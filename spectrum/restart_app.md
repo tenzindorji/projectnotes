@@ -4,9 +4,9 @@ This project is parameterized
   - Choice Parameter
     - Name: ACTION
     - Choices:\
-        status
-        stop
-        start
+        status\
+        stop\
+        start\
         restart
     - Description:
         <p>Choose the action carefully</p>

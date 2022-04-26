@@ -1,12 +1,12 @@
 ## Jenkins Job Elasticsearch restart
 
 This project is parameterized
-  -  Choice Parameter
+  - Choice Parameter
     - Name: ACTION
     - Choices:\
-        status
-        stop
-        start
+        status\
+        stop\
+        start\
         restart
     - Description:
         <br>status,
@@ -14,10 +14,10 @@ This project is parameterized
         <br>start,
         <br>restart
 
-  -  Choice Parameter
+  - Choice Parameter
     - Name: Node
     - Choices:\
-        server1.example.com
+        server1.example.com\
         server2.example.com
 
 Execute Shell
