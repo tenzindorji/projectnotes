@@ -39,7 +39,7 @@ fi
 for HAPROXY_SERVER in ${HAPROXY_SERVERS[@]}
 do
 
-  SSH_OPTION="ssh jenkins_worker@${HAPROXY_SERVER} -o StrictHostKeyChecking=no"
+  SSH_OPTION="ssh jenkins_user@${HAPROXY_SERVER} -o StrictHostKeyChecking=no"
 
   for SERVER in ${SERVERS[@]}
 

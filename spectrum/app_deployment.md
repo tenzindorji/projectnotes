@@ -77,7 +77,7 @@ This project is parameterized
 
       for SERVER in "${SERVERS[@]}"
       do
-      SSH_OPTION="ssh -q jenkins_worker@${SERVER} -o StrictHostKeyChecking=no"
+      SSH_OPTION="ssh -q jenkins_user@${SERVER} -o StrictHostKeyChecking=no"
 
 
       echo ""
@@ -106,7 +106,7 @@ This project is parameterized
       elif [[ $ACTION == "ROLLBACK" ]]; then
       for SERVER in "${SERVERS[@]}"
       do
-      SSH_OPTION="ssh -q jenkins_worker@${SERVER} -o StrictHostKeyChecking=no"
+      SSH_OPTION="ssh -q jenkins_user@${SERVER} -o StrictHostKeyChecking=no"
       echo ""
       echo "################## Rollback on $SERVER #######################"
       $SSH_OPTION << END_CONNECTION

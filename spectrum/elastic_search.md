@@ -29,7 +29,7 @@ SERVER=${Node}
 
 if [ ${action} == "restart" ];
 then
-	SSH_OPTION="ssh -q jenkins_worker@${SERVER} -o StrictHostKeyChecking=no"
+	SSH_OPTION="ssh -q jenkins_user@${SERVER} -o StrictHostKeyChecking=no"
 
 	$SSH_OPTION << END_CONNECTION
 
@@ -43,7 +43,7 @@ then
 END_CONNECTION
 
 else
-	SSH_OPTION="ssh -q jenkins_worker@${SERVER} -o StrictHostKeyChecking=no"
+	SSH_OPTION="ssh -q jenkins_user@${SERVER} -o StrictHostKeyChecking=no"
 
 	$SSH_OPTION << END_CONNECTION
 

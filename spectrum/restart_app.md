@@ -45,7 +45,7 @@ END_CONNECTION
 else
 	for SERVER in "${SERVERS[@]}"
 	do
-    SSH_OPTION="ssh -q svc-ecomorder-oobops@${SERVER} -o StrictHostKeyChecking=no"
+    SSH_OPTION="ssh -q svc-myservice-account@${SERVER} -o StrictHostKeyChecking=no"
 	$SSH_OPTION << END_CONNECTION
 
     	if [ ${action} == "start" ] || [ ${action} == "stop" ];
