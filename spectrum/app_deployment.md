@@ -1,24 +1,24 @@
 ## Jenkins Job app deployment
 
 This project is parameterized
-  - Active Choices Parameter\
-    - Name: ACTION\
-    - script: Grovy Script (select this)\
+  - Active Choices Parameter
+    - Name: ACTION
+    - script: Grovy Script (select this)
         - Script:\
             Grovy Script: return["DEPLOY", "ROLLBACK"]\
-            Check "Use Grovy Sandbox"\
+            Check "Use Grovy Sandbox"
     - Description:
       <p>
       Click <b style='color:blue;'> DEPLOY</b> to Deploy to UAT servers<br>
       Click <b style='color:orange;'> ROLLBACK</b> to revert to previous version
       </p>
-    - Choice Type: Radio Buttons\
+    - Choice Type: Radio Buttons
     - Filter Start at: 1
 
-  - Active Choices Reactive Reference Parameter\
-    - Name: VERSION\
-    - script: Grovy Script (select this)\
-      - Script:\
+  - Active Choices Reactive Reference Parameter
+    - Name: VERSION
+    - script: Grovy Script (select this)
+      - Script:
         - Grovy Script:
 
           ```
@@ -36,17 +36,17 @@ This project is parameterized
 
           ```
 
-        - Check "Use Grovy Sandbox"\
-    - Choice Type: Formatted HTML\
+        - Check "Use Grovy Sandbox"
+    - Choice Type: Formatted HTML
     - Referenced parameters: ACTION
 
 
   - Bindings
-    - Username and Password(Separated):\
-      - Username Variable: JENKINS_USER\
-      - Password Variable: JENKINS_PASSWORD\
-    - Credentials:\
-      - Specific credentials\
+    - Username and Password(Separated):
+      - Username Variable: JENKINS_USER
+      - Password Variable: JENKINS_PASSWORD
+    - Credentials:
+      - Specific credentials
         - Bit Bucket and Artifactory
 
 

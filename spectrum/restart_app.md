@@ -1,9 +1,9 @@
 ## Jenkins Job App restart using service account
 
 This project is parameterized
-  - > Choice Parameter
+  - Choice Parameter
     - Name: ACTION
-    - Choices:
+    - Choices:\
         status
         stop
         start
@@ -12,7 +12,7 @@ This project is parameterized
         <p>Choose the action carefully</p>
         <p>Core UAT java service restart,stop,start,status</p>
 
-  - > Password Parameter
+  - Password Parameter
     - Name: SVC_PASSWORD
     - Default Value: Concealed
 

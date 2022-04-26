@@ -1,15 +1,14 @@
 ## Haproxy Maint Jenkins Job
 
-
 This project is parameterized
-  - > Choice Parameter
+  -  Choice Parameter
     - Name: ACTION
-    - Choices:
+    - Choices:\
         enable
         disable
-  - > Choice Parameter
+  -  Choice Parameter
     - Name: DC
-    - Choices:
+    - Choices:\
         nce
         ncw
 
