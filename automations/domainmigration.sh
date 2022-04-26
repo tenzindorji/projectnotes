@@ -73,7 +73,7 @@ elif [[ ${1} == "domain_update" ]];then
     grep "myserverdomain.com" /etc/resolv.conf
   else
     sed -i 's/myserverdomain.com//g' /etc/resolv.conf
-    sed -i 's/search  /search myserverdomain.com/g' /etc/resolv.conf
+    sed -i 's/search/search myserverdomain.com/g' /etc/resolv.conf
     sed -Ei 's/[[:space:]]+/ /g' /etc/resolv.conf
     echo "myserverdomain.com added in /etc/resolv.conf"
     grep "myserverdomain.com" /etc/resolv.conf
