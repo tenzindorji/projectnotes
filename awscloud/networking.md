@@ -82,3 +82,48 @@ You can access your instance using bastion host hosted in public subnet and has 
 |stateful|stateless|
 |evaluate all rules before deciding whether to allow traffic|Process rules in order|
 |applies to an instance only|Automatically applies to all instances in the subnet|
+
+## wavelength associate carrier IP
+Amazon procure IP for wavelength
+
+Allocate and associate a Carrier IP address with the instance in the Wavelength Zone subnet
+
+If you used the Amazon EC2 console to launch the instance, or you did not use the associate-carrier-ip-address option in the AWS CLI, then you must allocate a Carrier IP address and assign it to the instance:
+
+To allocate and associate a Carrier IP address using the AWS CLI
+
+    Use the allocate-address command as follows.
+
+    aws ec2 allocate-address --region us-east-1 --domain vpc --network-border-group us-east-1-wl1-iah-wlz-1 —profile profilename
+
+aws ec2 allocate-address --region us-east-1 --domain vpc --network-border-group us-east-1-wl1-iah-wlz-1 --profile profilename 
+
+Returned 
+
+{
+
+    "AllocationId": "eipalloc-",
+
+    "PublicIpv4Pool": "amazon",
+
+    "NetworkBorderGroup": "us-east-1-wl1-iah-wlz-1",
+
+    "Domain": "vpc",
+
+    "CarrierIp": "155.146.xx.xxx"
+
+}
+
+Use the associate-address command to associate the Carrier IP address with the EC2 instance as follows.
+
+aws ec2 associate-address --allocation-id eipalloc-05807b62acEXAMPLE --network-interface-id eni-1a2b3c4d
+
+The following is example output:
+{
+    "AssociationId": "eipassoc-02463d08ceEXAMPLE",
+}
+
+
+aws ec2 associate-address --allocation-id eipalloc-02d6 --network-interface-id eni-07e3ea2 —profile profilename
+
+{
