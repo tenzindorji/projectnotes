@@ -5,10 +5,15 @@ sudo apt install ifuse
 ##connect Iphone via usb to ubuntu machine
 idevicepair validate
 idevicepair pair
-
 mkdir ~/iphone && ifuse ~/iphone
+
+##Download images and videos
 cd ~/iphone
 cp -R DCIM/ ~
+
+##To reconnect:
+fusermount -u ~/iphone && rmdir  ~/iphone
+mkdir ~/iphone && ifuse ~/iphone
 
 cleanup:
 fusermount -u ~/iphone && rmdir  ~/iphone
