@@ -1,0 +1,16 @@
+##downlaod videos and images from Iphone to ubuntu computer
+sudo apt-get install libimobiledevice-utils 
+sudo apt install ifuse
+
+##connect Iphone via usb to ubuntu machine
+idevicepair validate
+idevicepair pair
+
+mkdir ~/iphone && ifuse ~/iphone
+cd ~/iphone
+cp -R DCIM/ ~
+
+cleanup:
+fusermount -u ~/iphone && rmdir  ~/iphone
+sudo apt-get remove libimobiledevice-utils
+sudo apt-get remove ifuse
